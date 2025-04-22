@@ -1,0 +1,44 @@
+# Xcode 项目文件
+*.xcworkspace
+!default.xcworkspace
+*.xcodeproj
+!default.xcodeproj
+xcuserdata/
+*.xcuserstate
+*.xccheckout
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.pbxuser
+
+# 编译产物
+build/
+DerivedData/
+*.o
+*.dSYM
+*.app
+*.ipa
+*.dylib
+*.framework
+
+# CocoaPods 依赖
+Pods/
+Podfile.lock
+
+# Carthage 依赖
+Carthage/
+Cartfile.resolved
+
+# 系统文件
+.DS_Store
+._*
+
+# 用户自定义文件
+*.swp
+*.backup
+*.orig
+*~
+
+# 日志和缓存
+*.log
+*.cache
