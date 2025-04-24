@@ -16,14 +16,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, strong)UIImageView *vipView;
 @property(nonatomic, strong)UIButton *followBtn;
 
-- (void)setupUI;
-- (void)initStyle;
-- (void)setupLayout;
 
 - (void)setAvatarWithImageName:(NSString *)imgName;
 - (void)setNameWithName:(NSString *)nickName;
-
-- (void)disPlayVip;
+- (void)displayVip;
 - (void)hideVip;
 @end
 

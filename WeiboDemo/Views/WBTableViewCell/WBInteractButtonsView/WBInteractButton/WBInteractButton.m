@@ -26,14 +26,18 @@
     return self;
 }
 
-- (instancetype)initWithImageName:(NSString *)imgName andText:(NSString *)text  {
+- (instancetype)initWithImageName:(NSString *)imgName andNumber:(NSInteger)count {
     self = [self init];
     [_iconView setImage:[UIImage imageNamed:imgName]];
-    _textLbl.text = text;
-//    [self setImage:[UIImage imageNamed:imgName] forState:UIControlStateNormal];
-//    [self setTitle:text forState:UIControlStateNormal];
+    _name = imgName;
+    self.count = count;
     return self;
 };
+
+- (void)setCount:(NSInteger)count {
+    _count = count;
+    self.textLbl.text = [self formattedTextforNumber:_count];
+}
 
 - (void)setupUI {
     _iconView = [[UIImageView alloc] init];
@@ -78,29 +82,28 @@
         make.centerY.equalTo(self);
         make.centerX.equalTo(self);
     }];
-    
-//    // 先确保按钮自身有最小尺寸
-//      [self mas_makeConstraints:^(MASConstraintMaker *make) {
-//          make.width.greaterThanOrEqualTo(@60); // 最小宽度
-//          make.height.greaterThanOrEqualTo(@30); // 最小高度
-//      }];
-//    
-//    [self.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
-//                make.height.width.equalTo(@16);
-//    }];
-//    
-//    [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.left.equalTo(self.imageView.mas_right).offset(4);
-//        make.height.equalTo(@16);
-//        make.width.equalTo(@50);
-//    }];
-    
 }
 
 - (void)didTapButton {
-    NSLog(@"did tap the %@ button", self.iconView);
+    if ([self.name isEqualToString:@"like"]) {
+        // 获取服务器的关注状态，若关注中，则+1，否则-1
+        if (YES) {
+            self.count++;
+        } else {
+            self.count--;
+        }
+    }
+    NSLog(@"%ld", self.count);
 }
 
-
+- (NSString *)formattedTextforNumber:(NSInteger) num {
+    if (num <= 9999) {
+        return [NSString stringWithFormat:@"%ld", num];
+    } else if (num <= 999 * 10000) {
+        return [NSString stringWithFormat:@"%.1lf万", num / 10000.0];
+    } else {
+        return [NSString stringWithFormat:@"999+万"];
+    }
+}
 
 @end

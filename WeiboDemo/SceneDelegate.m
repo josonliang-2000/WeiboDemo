@@ -6,6 +6,7 @@
 //
 
 #import "SceneDelegate.h"
+#import "WBTableViewController.h"
 
 @interface SceneDelegate ()
 
@@ -15,9 +16,78 @@
 
 
 - (void)scene:(UIScene *)scene willConnectToSession:(UISceneSession *)session options:(UISceneConnectionOptions *)connectionOptions {
-    // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
-    // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
-    // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
+    
+    // 1. 初始化 Window 并关联 Scene（关键修复点）
+    if ([scene isKindOfClass:[UIWindowScene class]]) {
+        // TODO: UIWindowScene
+        UIWindowScene *windowScene = (UIWindowScene *)scene;
+        self.window = [[UIWindow alloc] initWithWindowScene:windowScene];
+        self.window.frame = windowScene.coordinateSpace.bounds;
+    } else {
+        // 兼容旧版本
+        self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    }
+    
+    // 2. 创建 TabBarController 结构
+    [self setupRootViewController];
+    
+    // 3. 显示 Window
+    [self.window makeKeyAndVisible];
+}
+
+- (void)setupRootViewController {
+    // 首页
+    self.homeVC = [[WBTableViewController alloc] init];
+    self.homeNC = [[UINavigationController alloc] initWithRootViewController:self.homeVC];
+    self.homeNC.navigationBar.translucent = NO;
+    
+    // 视频号
+    self.videoVC = [[WBTableViewController alloc] init];
+    self.videoNC = [[UINavigationController alloc] initWithRootViewController:self.videoVC];
+    self.videoNC.navigationBar.translucent = NO;
+    
+    // 发现
+    self.findVC = [[WBTableViewController alloc] init];
+    self.findNC = [[UINavigationController alloc] initWithRootViewController:self.findVC];
+    self.findNC.navigationBar.translucent = NO;
+    
+    // 消息
+    self.messageVC = [[WBTableViewController alloc] init];
+    self.messageNC = [[UINavigationController alloc] initWithRootViewController:self.messageVC];
+    self.messageNC.navigationBar.translucent = NO;
+    
+    // 我的
+    self.meVC = [[WBTableViewController alloc] init];
+    self.meNC = [[UINavigationController alloc] initWithRootViewController:self.meVC];
+    self.meNC.navigationBar.translucent = NO;
+    
+    
+    // 配置 TabBarController
+    self.tabBarController = [[UITabBarController alloc] init];
+    self.tabBarController.viewControllers = @[self.homeNC, self.videoNC, self.findNC, self.messageNC, self.meNC];
+    
+    // 设置根控制器
+    self.window.rootViewController = self.tabBarController;
+    
+    // 设置tabbarItem样式
+    self.homeNC.tabBarItem = [self systemTabBarItemWithTitle:@"首页" systemIconName:@"house" selectedIconName:@"house.fill"];
+    self.videoNC.tabBarItem = [self systemTabBarItemWithTitle:@"视频号" systemIconName:@"play.rectangle" selectedIconName:@"play.rectangle.fill"];
+    self.findNC.tabBarItem = [self systemTabBarItemWithTitle:@"发现" systemIconName:@"magnifyingglass" selectedIconName:@"magnifyingglass"];
+    self.messageNC.tabBarItem = [self systemTabBarItemWithTitle:@"消息" systemIconName:@"message" selectedIconName:@"message.fill"];
+    self.meNC.tabBarItem = [self systemTabBarItemWithTitle:@"我" systemIconName:@"person" selectedIconName:@"person.fill"];
+}
+
+// 工具方法：创建系统图标的 UITabBarItem
+- (UITabBarItem *)systemTabBarItemWithTitle:(NSString *)title
+                             systemIconName:(NSString *)iconName
+                           selectedIconName:(NSString *)selectedIconName {
+    UIImage *normalImage = [UIImage systemImageNamed:iconName];
+    UIImage *selectedImage = [UIImage systemImageNamed:selectedIconName];
+    
+    UITabBarItem *item = [[UITabBarItem alloc] initWithTitle:title
+                                                       image:normalImage
+                                               selectedImage:selectedImage];
+    return item;
 }
 
 

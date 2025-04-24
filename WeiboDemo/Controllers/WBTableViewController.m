@@ -13,13 +13,13 @@
 
 
 @property(nonatomic, strong) NSMutableArray *wbModels;
-
+//@property(nonatomic, strong) NSDictionary<NSNumber *, NSString *> *cellPicNumToTypeDict;
 @end
 
 @implementation WBTableViewController
 
 // cell类型标识
-static NSDictionary<NSNumber *, NSString *> *cellPicNumToTypeDict;
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -33,18 +33,19 @@ static NSDictionary<NSNumber *, NSString *> *cellPicNumToTypeDict;
     // 隐藏滚动条
     self.tableView.showsVerticalScrollIndicator = NO;
     
-    cellPicNumToTypeDict = @{
-        @0:@"WBTableCell_NoPic",
-        @1:@"WBTableCell_1Pics",
-        @2:@"WBTableCell_2Pics",
-        @3:@"WBTableCell_3Pics",
-        @4:@"WBTableCell_4Pics",
-        @5:@"WBTableCell_5Pics",
-        @6:@"WBTableCell_6Pics",
-        @7:@"WBTableCell_7Pics",
-        @8:@"WBTableCell_8Pics",
-        @9:@"WBTableCell_8Pics",
-    };
+//    self.cellPicNumToTypeDict = [[NSDictionary alloc] init];
+//    self.cellPicNumToTypeDict = @{
+//        @0:@"WBTableCell_NoPic",
+//        @1:@"WBTableCell_1Pics",
+//        @2:@"WBTableCell_2Pics",
+//        @3:@"WBTableCell_3Pics",
+//        @4:@"WBTableCell_4Pics",
+//        @5:@"WBTableCell_5Pics",
+//        @6:@"WBTableCell_6Pics",
+//        @7:@"WBTableCell_7Pics",
+//        @8:@"WBTableCell_8Pics",
+//        @9:@"WBTableCell_9Pics",
+//    };
 }
 
 #pragma mark - 懒加载models
@@ -80,8 +81,10 @@ static NSDictionary<NSNumber *, NSString *> *cellPicNumToTypeDict;
     WBCellModel *model = _wbModels[indexPath.row];
     
     // 2. 创建cell
-    NSNumber *picsNum = [[NSNumber alloc] initWithLong:model.pic.count];
-    NSString *cellId = cellPicNumToTypeDict[picsNum];
+//    NSNumber *picsNum = [[NSNumber alloc] initWithLong:model.pic.count];
+//    NSString *cellId = cellPicNumToTypeDict[picsNum];
+    NSString *cellId = @"cell_id";
+    
     WBTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
     if (cell == nil) {
         cell = [[WBTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellId];

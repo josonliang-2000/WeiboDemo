@@ -15,7 +15,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, strong)UILabel *textLbl;
 @property(nonatomic, strong)UIStackView *stackView;
 
-- (instancetype)initWithImageName:(NSString *)imgName andText:(NSString *)text;
+@property(nonatomic, assign)NSInteger count;
+@property(nonatomic, readonly)NSString *name;
+
+- (instancetype)initWithImageName:(NSString *)imgName andNumber:(NSInteger)number;
 @end
 
 NS_ASSUME_NONNULL_END

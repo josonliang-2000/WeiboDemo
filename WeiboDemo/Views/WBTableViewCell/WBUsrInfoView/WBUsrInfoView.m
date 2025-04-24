@@ -42,6 +42,10 @@
     [self setupLayout];
 }
 
+#pragma mark - public methods
+
+
+
 - (void)initStyle {
     // for debug
 //    [_avatarView setBackgroundColor: [UIColor grayColor]];
@@ -115,7 +119,7 @@
     }
 }
 
-- (void)disPlayVip {
+- (void)displayVip {
     self.vipView.hidden = NO;
 }
 

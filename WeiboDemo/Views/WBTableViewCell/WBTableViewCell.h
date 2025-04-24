@@ -24,13 +24,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, strong) WBInteractButtonsView *interacButtonsView;
 @property(nonatomic, strong) UIView *seperator;
 
-// 数据
+// model
 @property(nonatomic, copy)WBCellModel *model;
 
-- (void)setupUI;
-- (void)initStyle;
-- (void)setupLayout;
-- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier withModel:(WBCellModel *)model;
 @end
 
 NS_ASSUME_NONNULL_END

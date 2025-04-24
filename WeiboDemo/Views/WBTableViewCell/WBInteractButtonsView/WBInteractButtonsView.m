@@ -28,9 +28,9 @@
 }
 
 - (void)setupUI {
-    self.shareBtn = [[WBInteractButton alloc] initWithImageName:@"share" andText:@"430"];
-    self.cmmtBtn = [[WBInteractButton alloc] initWithImageName:@"comment" andText:@"1157"];
-    self.likeBtn = [[WBInteractButton alloc] initWithImageName:@"like" andText:@"3.8万"];
+    self.shareBtn = [[WBInteractButton alloc] initWithImageName:@"share" andNumber:38000];
+    self.cmmtBtn = [[WBInteractButton alloc] initWithImageName:@"comment" andNumber:1157];
+    self.likeBtn = [[WBInteractButton alloc] initWithImageName:@"like" andNumber:999];
     [self addArrangedSubview:self.shareBtn];
     [self addArrangedSubview:self.cmmtBtn];
     [self addArrangedSubview:self.likeBtn];

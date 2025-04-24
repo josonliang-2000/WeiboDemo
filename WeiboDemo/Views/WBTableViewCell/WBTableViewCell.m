@@ -9,15 +9,20 @@
 #import "WBCellModel.h"
 #import "WBUsrInfoView.h"
 #import "WBInteractButtonsView.h"
+#import "WBImageView.h"
 #import "Masonry/Masonry.h"
 
 @implementation WBTableViewCell
+
+#pragma mark - class property
 
 // 垂直方向上组件间的spacing
 static const CGFloat kVerticalspacing = 6.0;
 
 // cell内子视图左右的margin
 static const CGFloat kHorizontalMargin = 8.0;
+
+#pragma mark - public methods
 
 // override：自定义cell
 -(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -27,14 +32,7 @@ static const CGFloat kHorizontalMargin = 8.0;
     return self;
 }
 
-
-- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier withModel:(WBCellModel *)model {
-    if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
-//        _model = model;
-        [self setupUI];
-    }
-    return self;
-}
+#pragma mark - private methods
 
 - (void) setupUI {
     _usrInfoView = [[WBUsrInfoView alloc] init];
@@ -95,13 +93,13 @@ static const CGFloat kHorizontalMargin = 8.0;
 }
 
 // TODO: 封装成工具类单例
-- (NSString *)formattedCount:(long) num {
+- (NSString *)formattedCount:(NSInteger) num {
     if (num <= 9999) {
         return [NSString stringWithFormat:@"%ld", num];
     } else if (num <= 999 * 10000) {
         return [NSString stringWithFormat:@"%.lf万", num / 10000.0];
     } else {
-        return [NSString stringWithFormat:@"9999+万"];
+        return [NSString stringWithFormat:@"999+万"];
     }
 }
 
@@ -127,7 +125,7 @@ static const CGFloat kHorizontalMargin = 8.0;
         make.left.mas_equalTo(self.contentView).offset(kHorizontalMargin);
         make.right.mas_equalTo(self.contentView).offset(-kHorizontalMargin);
     }];
-//    
+    
     // countLbl
     [self.countLbl mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(self.mediaView.mas_bottom).offset(kVerticalspacing);
@@ -178,7 +176,7 @@ static const CGFloat kHorizontalMargin = 8.0;
         
         // vip显示
         if (self.model.vip) {
-            [self.usrInfoView disPlayVip];
+            [self.usrInfoView displayVip];
         } else {
             [self.usrInfoView hideVip];
         }
@@ -197,9 +195,7 @@ static const CGFloat kHorizontalMargin = 8.0;
 }
 
 - (void)setMediaViewFrame {
-    // TODO: 改成按原比例显示图片
-    const CGFloat kcellWidth = [UIScreen mainScreen].bounds.size.width; //cell的宽度
-    static CGFloat spacing = 8.0;
+    static CGFloat spacing = 4;
     
     // 先清空子控件
     [self.mediaView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
@@ -208,17 +204,15 @@ static const CGFloat kHorizontalMargin = 8.0;
     NSArray<NSString *> *picsArray = [NSArray arrayWithArray:self.model.pic];
     if (picsArray.count) {
         const NSInteger picsNum = MIN(9, picsArray.count); // 最多显示9张
-        UIImage *image = [UIImage imageNamed:picsArray[0]];
-        // 以第一张图片的比例为所有图片显示的宽高比
-        const CGFloat heightWidhRatio = image.size.height / image.size.width;
+        const CGFloat cellWidth = [UIScreen mainScreen].bounds.size.width;
         
         // 根据行数、列数排布mediaView内的照片，以及约束mediaView的高度
         void(^arrangePicsandLayout)(int, int) = ^(int columns, int rows) {
-            CGFloat imageWidth = (kcellWidth - spacing * (columns - 1) - kHorizontalMargin * 2) / columns;
-            CGFloat imageHeight = imageWidth * heightWidhRatio;
+            CGFloat imageWidth = (cellWidth - spacing * (columns - 1) - kHorizontalMargin * 2) / columns;
+            CGFloat imageHeight = imageWidth;
             CGFloat mediaViewH = imageHeight * rows + spacing * (rows - 1);
             for (int i = 0; i < picsNum; i++) {
-                UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:picsArray[i]]];
+                WBImageView *imageView = [[WBImageView alloc] initWithImage:[UIImage imageNamed:picsArray[i]]];
                 
                 imageView.frame = CGRectMake((spacing + imageWidth) * (i % columns),
                                              (spacing + imageHeight) * (i / columns),
@@ -245,12 +239,14 @@ static const CGFloat kHorizontalMargin = 8.0;
             int rows = ceil(1.0 * picsNum / columns);
             arrangePicsandLayout(columns, rows);
         } else {
-            // 单张图
-            CGFloat imageWidth = 250.0;
-            CGFloat imageHeight = imageWidth * heightWidhRatio;
-            CGFloat imageX = 0;
-            CGFloat imageY = 0;
-            UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:picsArray[0]]];
+            // 单张图按比例
+            UIImage *image = [UIImage imageNamed:picsArray[0]];
+            const CGFloat heightWidthRatio = image.size.height / image.size.width;
+            static CGFloat imageWidth = 250.0;
+            const CGFloat imageHeight = imageWidth * heightWidthRatio;
+            static CGFloat imageX = 0;
+            static CGFloat imageY = 0;
+            WBImageView *imageView = [[WBImageView alloc] initWithImage:image];
             imageView.frame = CGRectMake(imageX, imageY, imageWidth, imageHeight);
             [self.mediaView addSubview:imageView];
             
