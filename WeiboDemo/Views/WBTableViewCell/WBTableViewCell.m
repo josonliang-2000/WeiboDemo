@@ -11,16 +11,32 @@
 #import "WBInteractButtonsView.h"
 #import "WBImageView.h"
 #import "Masonry/Masonry.h"
+#import "WBImageUtils.h"
+#import "SDWebImage/SDWebImage.h"
+
+@interface WBTableViewCell()
+// 子控件
+@property(nonatomic, strong) WBUsrInfoView *usrInfoView;
+@property(nonatomic, strong) UILabel *textLbl;
+@property(nonatomic, strong) UIView *mediaView;
+@property(nonatomic, strong) UILabel *countLbl;
+@property(nonatomic, strong) UIView *line;
+@property(nonatomic, strong) WBInteractButtonsView *interacButtonsView;
+@property(nonatomic, strong) UIView *seperator;
+
+
+- (void) setupUI;
+- (void)initStyle;
+- (NSString *)formattedCount:(NSInteger) num;
+- (void)setupLayout;
+- (void)loadModel;
+- (void)setMediaViewFrame;
+
+// for WBImageViewProtocol
+- (void)didTapImageView:(WBImageView *)imageView;
+@end
 
 @implementation WBTableViewCell
-
-#pragma mark - class property
-
-// 垂直方向上组件间的spacing
-static const CGFloat kVerticalspacing = 6.0;
-
-// cell内子视图左右的margin
-static const CGFloat kHorizontalMargin = 8.0;
 
 #pragma mark - public methods
 
@@ -32,64 +48,93 @@ static const CGFloat kHorizontalMargin = 8.0;
     return self;
 }
 
+// 复用cell时重新加载数据即可
+- (void)setModel:(WBCellModel *)model {
+    _model = model;
+    [self loadModel];
+
+}
+
 #pragma mark - private methods
 
 - (void) setupUI {
-    _usrInfoView = [[WBUsrInfoView alloc] init];
-    _textLbl = [[UILabel alloc] init];
-    _mediaView = [[UIView alloc] init];
-    _countLbl = [[UILabel alloc] init];
-    _line = [[UIView alloc] init];
-    _interacButtonsView = [[WBInteractButtonsView alloc] init];
-    _seperator = [[UIView alloc] init];
-    
     [self initStyle];
-//    [self loadModel];
-    
-    [self.contentView addSubview:_usrInfoView];
-    [self.contentView addSubview:_textLbl];
-    [self.contentView addSubview:_mediaView];
-    [self.contentView addSubview:_countLbl];
-    [self.contentView addSubview:_line];
-    [self.contentView addSubview:_interacButtonsView];
-    [self.contentView addSubview:_seperator];
+
+    [self.contentView addSubview:self.usrInfoView];
+    [self.contentView addSubview:self.textLbl];
+    [self.contentView addSubview:self.mediaView];
+    [self.contentView addSubview:self.countLbl];
+    [self.contentView addSubview:self.line];
+    [self.contentView addSubview:self.interacButtonsView];
+    [self.contentView addSubview:self.seperator];
     
     [self setupLayout];
 }
 
+- (WBUsrInfoView *)usrInfoView {
+    if (_usrInfoView == nil) {
+        _usrInfoView = [[WBUsrInfoView alloc] init];
+        _usrInfoView.avatarView.delegate = self;
+    }
+    return _usrInfoView;
+}
+
+- (UILabel *)textLbl {
+    if (_textLbl == nil) {
+        _textLbl = [[UILabel alloc] init];
+        _textLbl.font = [UIFont systemFontOfSize:14];
+        _textLbl.numberOfLines = 0; // 允许多行显示
+    }
+    return _textLbl;
+}
+
+- (UIView *)mediaView {
+    if (_mediaView == nil) {
+        _mediaView = [[UIView alloc] init];
+    }
+    return _mediaView;
+}
+
+- (UILabel *)countLbl {
+    if (_countLbl == nil) {
+        _countLbl = [[UILabel alloc] init];
+        _countLbl.font = [UIFont systemFontOfSize:14];
+        const NSInteger cnt = 338;
+        [_countLbl setText:[NSString stringWithFormat:@"%@人🤩😎🤓", [self formattedCount:cnt]]];
+        _countLbl.textAlignment = NSTextAlignmentRight;
+    }
+    return _countLbl;
+}
+
+- (UIView *)line {
+    if (_line == nil) {
+        _line = [[UIView alloc] init];
+    }
+    return _line;
+}
+
+
+- (WBInteractButtonsView *)interacButtonsView {
+    if (_interacButtonsView == nil) {
+        _interacButtonsView = [[WBInteractButtonsView alloc] init];
+    }
+    return _interacButtonsView;
+}
+
+- (UIView *)seperator {
+    if (_seperator == nil) {
+        _seperator = [[UIView alloc] init];
+        _seperator.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
+    }
+    return _seperator;
+}
+
 - (void)initStyle {
     // 取消cell选中时默认背景色
+    // TODO: tbaleView有个属性可以设置
     UIView *selectedView = [[UIView alloc] init];
     [selectedView setBackgroundColor:[UIColor clearColor]];
     self.selectedBackgroundView = selectedView;
-
-    // 设置边框 for debug
-    void(^setBorder)(UIView *, UIColor *) = ^(UIView *view, UIColor *color){
-        view.layer.borderColor = color.CGColor;
-        view.layer.borderWidth = 4.0;
-    };
-//    setBorder(self.usrInfoView, [UIColor redColor]);
-//    setBorder(self.textLbl, [UIColor blueColor]);
-//    setBorder(self.mediaView, [UIColor greenColor]);
-//    setBorder(self.countLbl, [UIColor lightGrayColor]);
-//    setBorder(self.interacButtonsView, [UIColor yellowColor]);
-    
-    // 子控件
-    // 发文
-    self.textLbl.font = [UIFont systemFontOfSize:14];
-    self.textLbl.numberOfLines = 0; // 允许多行显示
-    
-    // 统计浏览人数
-    self.countLbl.font = [UIFont systemFontOfSize:14];
-    long cnt = 338;
-    [self.countLbl setText:[NSString stringWithFormat:@"%@人🤩😎🤓", [self formattedCount:cnt]]];
-    self.countLbl.textAlignment = NSTextAlignmentRight;
-    
-    // 灰色分割线
-    [self.line setBackgroundColor:[UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1.0]];
-    
-    // cell与cell之间灰色区域
-    self.seperator.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
 }
 
 // TODO: 封装成工具类单例
@@ -104,7 +149,13 @@ static const CGFloat kHorizontalMargin = 8.0;
 }
 
 - (void)setupLayout {
+    // 垂直方向上组件间的spacing
+    const CGFloat kVerticalspacing = 6.0;
+    // cell内子视图左右的margin
+    const CGFloat kHorizontalMargin = 8.0;
+    
     // usrInfoView
+    // TODO: 最外层改成StackView
     [self.usrInfoView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(self.contentView.mas_top);
         make.left.mas_equalTo(kHorizontalMargin);
@@ -158,45 +209,36 @@ static const CGFloat kHorizontalMargin = 8.0;
     }];
 }
 
-// 复用cell时重新加载数据即可
-- (void)setModel:(WBCellModel *)model {
-    _model = model;
-    [self loadModel];
-
-}
 
 // 加载数据，并处理动态布局
 - (void)loadModel{
-    if (self.model) {
-        // 头像
-        [self.usrInfoView setAvatarWithImageName:self.model.avatar];
-        
-        // 昵称
-        [self.usrInfoView setNameWithName:self.model.name];
-        
-        // vip显示
-        if (self.model.vip) {
-            [self.usrInfoView displayVip];
-        } else {
-            [self.usrInfoView hideVip];
-        }
-        
-        // 发文
-        if (self.model.text) {
-            self.textLabel.hidden = NO;
-            self.textLbl.text = self.model.text;
-        } else {
-            self.textLabel.hidden = YES;
-        }
-        
-        // 配图
-        [self setMediaViewFrame];
+    // 头像
+    //TODO: SDWebImage加载的图片会去掉圆角
+    [self.usrInfoView.avatarView sd_setImageWithURL:[NSURL URLWithString:self.model.avatar] placeholderImage:[UIImage imageNamed:@"default_avatar"]];
+    
+    // 昵称
+    self.usrInfoView.nameLbl.text = self.model.name;
+    
+    // vip显示
+    self.usrInfoView.vipView.hidden = !self.model.vip;
+
+    
+    // 发文
+    if (self.model.text) {
+        self.textLabel.hidden = NO;
+        self.textLbl.text = self.model.text;
+    } else {
+        self.textLabel.hidden = YES;
     }
+    
+    // 配图
+    [self setMediaViewFrame];
 }
 
 - (void)setMediaViewFrame {
-    static CGFloat spacing = 4;
-    
+    // TODO: 封装成一个view
+    const CGFloat spacing = 4;
+    const CGFloat kHorizontalMargin = 8;
     // 先清空子控件
     [self.mediaView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     
@@ -212,7 +254,12 @@ static const CGFloat kHorizontalMargin = 8.0;
             CGFloat imageHeight = imageWidth;
             CGFloat mediaViewH = imageHeight * rows + spacing * (rows - 1);
             for (int i = 0; i < picsNum; i++) {
-                WBImageView *imageView = [[WBImageView alloc] initWithImage:[UIImage imageNamed:picsArray[i]]];
+                // TODO: 封装imageView创建
+                WBImageView *imageView = [[WBImageView alloc] initWithIndex:i];
+                [imageView sd_setImageWithURL:[NSURL URLWithString:self.model.pic[i]] placeholderImage:[UIImage imageNamed:@"image_placeholder"]];
+                imageView.delegate = self;
+                // 监听来自imageView的点击事件
+//                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleImageTap:) name:@"imageTapNotification" object:nil];
                 
                 imageView.frame = CGRectMake((spacing + imageWidth) * (i % columns),
                                              (spacing + imageHeight) * (i / columns),
@@ -240,17 +287,23 @@ static const CGFloat kHorizontalMargin = 8.0;
             arrangePicsandLayout(columns, rows);
         } else {
             // 单张图按比例
-            UIImage *image = [UIImage imageNamed:picsArray[0]];
-            const CGFloat heightWidthRatio = image.size.height / image.size.width;
-            static CGFloat imageWidth = 250.0;
-            const CGFloat imageHeight = imageWidth * heightWidthRatio;
-            static CGFloat imageX = 0;
-            static CGFloat imageY = 0;
-            WBImageView *imageView = [[WBImageView alloc] initWithImage:image];
+            const CGFloat imageWidth = 250.0;
+            const CGFloat imageHeight = imageWidth;
+            const CGFloat imageX = 0;
+            const CGFloat imageY = 0;
+            
+            WBImageView *imageView = [[WBImageView alloc] initWithIndex: 0];
+            imageView.delegate = self;
+            [imageView sd_setImageWithURL:[NSURL URLWithString:self.model.pic[0]] placeholderImage:[UIImage imageNamed:@"image_placeholder"]];
+            UIImage *image = imageView.image;
+            // TODO: 能否将下载的图片按照比例绘制到imageView里
+//            const CGFloat heightWidthRatio = image.size.height / image.size.width;
+//            const CGFloat imageHeight = imageWidth * heightWidthRatio;
             imageView.frame = CGRectMake(imageX, imageY, imageWidth, imageHeight);
             [self.mediaView addSubview:imageView];
             
-            // 重用cell的时候，已有的约束应该更新，否则产生多个等号右边不一的方程必定冲突
+            
+            // 重用cell的时候，已有的约束应该更新，否则产生多个等号左边相同，等号右边不一的方程，必定冲突
             [self.mediaView mas_updateConstraints:^(MASConstraintMaker *make) {
                 make.height.mas_equalTo(imageHeight);
             }];
@@ -264,15 +317,16 @@ static const CGFloat kHorizontalMargin = 8.0;
  
 }
 
-- (void)awakeFromNib {
-    [super awakeFromNib];
-    // Initialization code
+- (void)didTapImageView:(WBImageView *)imageView {
+    [WBImageUtils zoomInImageOfImageView:imageView];
 }
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:animated];
+//- (void)handleImageTap:(NSNotification *)notification {
+//    NSLog(@"%@----message from imageView:%@", self, notification.userInfo);
+//}
 
-    // Configure the view for the selected state
-}
-
+//- (void)dealloc {
+//    // 注销在notification中的监听
+//    [[NSNotificationCenter defaultCenter] removeObserver:self];
+//}
 @end

@@ -33,6 +33,7 @@
     // 隐藏滚动条
     self.tableView.showsVerticalScrollIndicator = NO;
     
+    // TODO: 测一下帧率
 //    self.cellPicNumToTypeDict = [[NSDictionary alloc] init];
 //    self.cellPicNumToTypeDict = @{
 //        @0:@"WBTableCell_NoPic",

@@ -9,11 +9,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-//TODO: 改成内部的titleLabel、imageView
+
 @interface WBInteractButton : UIButton
 @property(nonatomic, strong)UIImageView *iconView;
 @property(nonatomic, strong)UILabel *textLbl;
-@property(nonatomic, strong)UIStackView *stackView;
 
 @property(nonatomic, assign)NSInteger count;
 @property(nonatomic, readonly)NSString *name;

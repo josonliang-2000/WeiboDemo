@@ -7,10 +7,10 @@
 
 #import <UIKit/UIKit.h>
 
-@class WBTableViewController;
-@interface SceneDelegate : UIResponder <UIWindowSceneDelegate>
+@class  WBTableViewController;
 
-@property (strong, nonatomic) UIWindow * window;
+@interface SceneDelegate : UIResponder <UIWindowSceneDelegate>
+@property (strong, nonatomic) UIWindow *window;
 @property (strong, nonatomic) WBTableViewController *homeVC;
 @property (strong, nonatomic) WBTableViewController *videoVC;
 @property (strong, nonatomic) WBTableViewController *findVC;
@@ -24,8 +24,6 @@
 @property (strong, nonatomic) UINavigationController *meNC;
 
 @property (strong, nonatomic) UITabBarController *tabBarController;
-
-
 
 @end
 

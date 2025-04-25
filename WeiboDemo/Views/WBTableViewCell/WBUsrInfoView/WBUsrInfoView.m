@@ -7,6 +7,7 @@
 
 #import "WBUsrInfoView.h"
 #import "Masonry/Masonry.h"
+#import "WBImageView.h"
 
 @implementation WBUsrInfoView
 
@@ -26,8 +27,9 @@
     return self;
 }
 
+
 - (void)setupUI {
-    _avatarView = [[UIImageView alloc] init];
+    _avatarView = [[WBImageView alloc] init];
     _nameLbl = [[UILabel alloc] init];
     _vipView = [[UIImageView alloc] init];
     _followBtn = [[UIButton alloc] init];
@@ -42,15 +44,13 @@
     [self setupLayout];
 }
 
-#pragma mark - public methods
-
-
-
 - (void)initStyle {
     // for debug
 //    [_avatarView setBackgroundColor: [UIColor grayColor]];
 //    [_nameLbl setBackgroundColor:[UIColor lightGrayColor]];
 //    [_vipView setBackgroundColor:[UIColor yellowColor]];
+    
+    _avatarView.clipsToBounds = YES;
     
     _nameLbl.font = [UIFont systemFontOfSize:14];
 
@@ -76,7 +76,6 @@
         make.width.height.equalTo(@40);
     }];
     _avatarView.layer.cornerRadius = 20;
-
     
     // 2. 昵称
     [_nameLbl mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -102,7 +101,10 @@
     _followBtn.layer.cornerRadius = 4;
 }
 
+#pragma mark - public methods
+
 - (void)setAvatarWithImageName:(NSString *)imgName {
+    // TODO: 换成SDImage
     _avatarView.image = [UIImage imageNamed:imgName];
 }
 

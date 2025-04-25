@@ -8,6 +8,11 @@
 #import "WBInteractButton.h"
 #import "Masonry/Masonry.h"
 
+@interface WBInteractButton()
+@property(nonatomic, strong)UIStackView *stackView;
+
+@end
+
 @implementation WBInteractButton
 
 /*

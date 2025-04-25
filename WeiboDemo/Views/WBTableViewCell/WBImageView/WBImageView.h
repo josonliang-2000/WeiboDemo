@@ -6,12 +6,16 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "WBImageViewDelegate.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-// 
-
 @interface WBImageView : UIImageView
+
+@property(nonatomic, readonly)NSInteger index;
+@property(nonatomic, weak)id<WBImageViewDelegate> delegate;
+
+- (instancetype)initWithIndex:(NSInteger)index;
 
 @end
 

@@ -8,6 +8,14 @@
 #import "WBImageView.h"
 #import "WBImageUtils.h"
 
+@interface WBImageView()
+
+
+- (void)addZoomInTapGesture;
+- (void)handleTap;
+@end
+
+
 @implementation WBImageView
 
 /*
@@ -17,7 +25,7 @@
     // Drawing code
 }
 */
-
+# pragma mark - override
 - (instancetype)initWithImage:(UIImage *)image {
     if (self = [super initWithImage:image]) {
         // 添加tap放大事件
@@ -26,14 +34,26 @@
     return self;
 }
 
+- (instancetype)initWithIndex:(NSInteger)index {
+    if (self = [super init]) {
+        _index = index;
+        // 添加tap放大事件
+        [self addZoomInTapGesture];
+    }
+    return self;
+}
 
+#pragma mark - private methods
 - (void)addZoomInTapGesture {
     [self setUserInteractionEnabled:YES];
-    UITapGestureRecognizer *tapZoomRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scanZoommedImage)];
+    UITapGestureRecognizer *tapZoomRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap)];
     [self addGestureRecognizer:tapZoomRecognizer];
 }
 
-- (void)scanZoommedImage {
-    [WBImageUtils zoomInImageOfImageView:self];
+- (void)handleTap {
+//    [WBImageUtils zoomInImageOfImageView:self];
+    if ([self.delegate respondsToSelector:@selector(didTapImageView:)]) {
+        [self.delegate didTapImageView:self];
+    }
 }
 @end

@@ -38,8 +38,16 @@ static CGRect kOriginFrame; //
     [tempBackgroundView addSubview:tempImageView];
     
     // 给临时的backgroundView绑定tap事件，处理缩小
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(zoomOutImageOfTap:)];
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapOfZoommedInImage:)];
     [tempBackgroundView addGestureRecognizer:tap];
+    
+//    // 给临时的backgroundView绑定左滑
+    UISwipeGestureRecognizer *leftSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleLeftSwipeOfZoomedInImage:)];
+    [tempBackgroundView addGestureRecognizer:leftSwipe];
+//    
+//    // 右滑事件
+//    UISwipeGestureRecognizer *rightSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleRightSwipeOfZoomedInImage:)];
+//    [tempBackgroundView addGestureRecognizer:rightSwipe];
 
     [currentWindow addSubview:tempBackgroundView];
 
@@ -50,9 +58,11 @@ static CGRect kOriginFrame; //
         tempImageView.frame = CGRectMake(0, (screenFrame.size.height - imageH) / 2, imageW, imageH);
         tempBackgroundView.alpha = 1;
     }];
+    
+    
 }
 
-+ (void)zoomOutImageOfTap:(UITapGestureRecognizer *)tap {
++ (void)handleTapOfZoommedInImage:(UITapGestureRecognizer *)tap {
     UIView *tappedView = tap.view;
     
     // 找出临时创建的View
@@ -63,6 +73,21 @@ static CGRect kOriginFrame; //
     } completion:^(BOOL finished) {
         [tappedView removeFromSuperview];
     }];
+}
+
++ (void)handleLeftSwipeOfZoomedInImage:(UISwipeGestureRecognizer *)leftSwipe {
+    UIView *tappedView = leftSwipe.view;
+    UIView *tempImageView = [tappedView viewWithTag:WBViewTagOfTempImageView];
+
+    // 左滑动画
+    [UIView animateWithDuration:0.4 animations:^ {
+//        CGFloat dstX = kOriginFrame
+    }];
+    
+}
+
++ (void)handleRightSwipeOfZoomedInImage:(UISwipeGestureRecognizer *)rightSwipe {
+    
 }
 
 + (UIWindow *)currentWindow {
