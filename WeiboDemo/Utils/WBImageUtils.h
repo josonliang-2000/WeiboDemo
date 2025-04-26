@@ -15,11 +15,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface WBImageUtils : NSObject
 
-@property(nonatomic, strong) UIView *imageViewer; // 图片查看器
-
 + (void)zoomInImageOfImageView:(UIImageView *)imageView;
 + (void)zoomOutImageOfTap:(UITapGestureRecognizer *)tap;
 + (UIWindow *)currentWindow;
+
 @end
 
 NS_ASSUME_NONNULL_END

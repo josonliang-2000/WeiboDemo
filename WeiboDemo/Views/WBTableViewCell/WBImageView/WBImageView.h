@@ -12,8 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface WBImageView : UIImageView
 
-@property(nonatomic, readonly)NSInteger index;
-@property(nonatomic, weak)id<WBImageViewDelegate> delegate;
+@property (nonatomic, readonly) NSInteger index;
+@property (nonatomic, weak) id<WBImageViewDelegate> delegate;
 
 - (instancetype)initWithIndex:(NSInteger)index;
 

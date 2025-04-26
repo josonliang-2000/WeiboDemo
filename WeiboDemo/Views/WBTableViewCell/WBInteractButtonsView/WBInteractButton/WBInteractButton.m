@@ -9,8 +9,12 @@
 #import "Masonry/Masonry.h"
 
 @interface WBInteractButton()
-@property(nonatomic, strong)UIStackView *stackView;
+@property (nonatomic, strong) UIStackView *stackView;
 
+- (void)setupUI;
+- (void) setupLayout;
+- (void)didTapButton;
+- (NSString *)formattedTextforNumber:(NSInteger) num;
 @end
 
 @implementation WBInteractButton
@@ -22,20 +26,17 @@
     // Drawing code
 }
 */
-
-- (instancetype)init {
-    if (self = [super init]) {
-        [self setupUI];
-        [self addTarget:self action:@selector(didTapButton) forControlEvents:UIControlEventTouchUpInside];
-    }
-    return self;
-}
+#pragma mark - public methods
 
 - (instancetype)initWithImageName:(NSString *)imgName andNumber:(NSInteger)count {
-    self = [self init];
-    [_iconView setImage:[UIImage imageNamed:imgName]];
-    _name = imgName;
-    self.count = count;
+    if(self = [super init]) {
+        [self setupUI];
+        [_iconView setImage:[UIImage imageNamed:imgName]];
+        _name = imgName;
+        self.count = count;
+        
+        [self addTarget:self action:@selector(didTapButton) forControlEvents:UIControlEventTouchUpInside];
+    }
     return self;
 };
 
@@ -44,48 +45,60 @@
     self.textLbl.text = [self formattedTextforNumber:_count];
 }
 
-- (void)setupUI {
-    _iconView = [[UIImageView alloc] init];
-    _textLbl = [[UILabel alloc] init];
-    _stackView = [[UIStackView alloc] initWithFrame:CGRectMake(0, 0, 80, 20)];
-    [self addSubview:_stackView];
-    
-    [self initStyle];
-    [self setupLayout];
-    // for debug
-//    [self setBackgroundColor:[UIColor lightGrayColor]];
+- (UIImageView *)iconView {
+    if (_iconView == nil) {
+        _iconView = [[UIImageView alloc] init];
+        _iconView.userInteractionEnabled = NO;
+    }
+    return _iconView;
 }
 
-- (void) initStyle {
-    _textLbl.font = [UIFont systemFontOfSize:14];
-    // TODO: 了解组件的事件传递链
-    _textLbl.userInteractionEnabled = NO;
-    _iconView.userInteractionEnabled = NO;
-    _stackView.userInteractionEnabled = NO;
-//    self.titleLabel.font = [UIFont systemFontOfSize:14];
-    
+- (UILabel *)textLbl {
+    if (_textLbl == nil) {
+        _textLbl = [[UILabel alloc] init];
+        _textLbl.font = [UIFont systemFontOfSize:14];
+        _textLbl.userInteractionEnabled = NO;
+    }
+    return _textLbl;
 }
+
+- (UIStackView *)stackView {
+    if (_stackView == nil) {
+        _stackView = [[UIStackView alloc] init];
+        _stackView.userInteractionEnabled = NO;
+        _stackView.spacing = 4;
+        _stackView.axis = UILayoutConstraintAxisHorizontal;
+        _stackView.distribution = UIStackViewDistributionEqualSpacing;        _stackView.alignment = UIStackViewAlignmentCenter;
+    }
+    return _stackView;
+}
+
+#pragma mark - private methods
+
+- (void)setupUI {
+    [self addSubview:self.stackView];
+    [self setupLayout];
+    // for debug
+    [self setBackgroundColor:[UIColor lightGrayColor]];
+}
+
 
 - (void) setupLayout {
     
-    [_iconView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.height.width.equalTo(@16);
+    [self.iconView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.height.width.mas_equalTo(16);
     }];
     
-    [_textLbl mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.height.equalTo(@16);
-        make.width.equalTo(@50);
+    [self.textLbl mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.height.mas_equalTo(16);
     }];
     
-    _stackView.spacing = 4;
-    _stackView.axis = UILayoutConstraintAxisHorizontal;
-    _stackView.distribution = UIStackViewDistributionFillProportionally;
-    [_stackView addArrangedSubview:_iconView];
-    [_stackView addArrangedSubview:_textLbl];
+    [self.stackView addArrangedSubview:self.iconView];
+    [self.stackView addArrangedSubview:self.textLbl];
     
-    [_stackView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(self);
-        make.centerX.equalTo(self);
+    [self.stackView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.center.equalTo(self);
+        make.height.mas_equalTo(20);
     }];
 }
 

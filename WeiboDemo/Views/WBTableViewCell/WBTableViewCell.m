@@ -16,13 +16,14 @@
 
 @interface WBTableViewCell()
 // 子控件
-@property(nonatomic, strong) WBUsrInfoView *usrInfoView;
-@property(nonatomic, strong) UILabel *textLbl;
-@property(nonatomic, strong) UIView *mediaView;
-@property(nonatomic, strong) UILabel *countLbl;
-@property(nonatomic, strong) UIView *line;
-@property(nonatomic, strong) WBInteractButtonsView *interacButtonsView;
-@property(nonatomic, strong) UIView *seperator;
+@property (nonatomic, strong) WBUsrInfoView *usrInfoView;
+@property (nonatomic, strong) UILabel *textLbl;
+@property (nonatomic, strong) UIView *mediaView;
+@property (nonatomic, strong) UILabel *countLbl;
+@property (nonatomic, strong) UIView *line;
+@property (nonatomic, strong) WBInteractButtonsView *interacButtonsView;
+@property (nonatomic, strong) UIView *seperator;
+@property (nonatomic, strong) UIStackView *stackView;
 
 
 - (void) setupUI;
@@ -53,22 +54,6 @@
     _model = model;
     [self loadModel];
 
-}
-
-#pragma mark - private methods
-
-- (void) setupUI {
-    [self initStyle];
-
-    [self.contentView addSubview:self.usrInfoView];
-    [self.contentView addSubview:self.textLbl];
-    [self.contentView addSubview:self.mediaView];
-    [self.contentView addSubview:self.countLbl];
-    [self.contentView addSubview:self.line];
-    [self.contentView addSubview:self.interacButtonsView];
-    [self.contentView addSubview:self.seperator];
-    
-    [self setupLayout];
 }
 
 - (WBUsrInfoView *)usrInfoView {
@@ -109,6 +94,7 @@
 - (UIView *)line {
     if (_line == nil) {
         _line = [[UIView alloc] init];
+        _line.backgroundColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1.0];
     }
     return _line;
 }
@@ -129,12 +115,45 @@
     return _seperator;
 }
 
+- (UIStackView *)stackView {
+    if (_stackView == nil) {
+        _stackView = [[UIStackView alloc] init];
+        _stackView.axis = UILayoutConstraintAxisVertical;
+        _stackView.spacing = 6.0;
+    }
+    return _stackView;
+}
+
+#pragma mark - private methods
+
+- (void) setupUI {
+    [self initStyle];
+    
+    [self.stackView addArrangedSubview:self.usrInfoView];
+    [self.stackView addArrangedSubview:self.textLbl];
+    [self.stackView addArrangedSubview:self.mediaView];
+    [self.stackView addArrangedSubview:self.countLbl];
+    [self.stackView addArrangedSubview:self.line];
+    [self.stackView addArrangedSubview:self.interacButtonsView];
+    
+    [self.contentView addSubview:self.stackView];
+    [self.contentView addSubview:self.seperator];
+    
+    [self setupLayout];
+}
+
 - (void)initStyle {
     // 取消cell选中时默认背景色
-    // TODO: tbaleView有个属性可以设置
-    UIView *selectedView = [[UIView alloc] init];
-    [selectedView setBackgroundColor:[UIColor clearColor]];
-    self.selectedBackgroundView = selectedView;
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
+    
+    // for debug
+    void(^setborder)(UIView *, UIColor *) = ^(UIView * view, UIColor *color) {
+        view.layer.borderColor = color.CGColor;
+        view.layer.borderWidth = 4.0;
+    };
+//    setborder(self.textLbl, [UIColor redColor]);
+//    setborder(self.mediaView, [UIColor blueColor]);
+    setborder(self.interacButtonsView, [UIColor greenColor]);
 }
 
 // TODO: 封装成工具类单例
@@ -149,71 +168,41 @@
 }
 
 - (void)setupLayout {
-    // 垂直方向上组件间的spacing
-    const CGFloat kVerticalspacing = 6.0;
-    // cell内子视图左右的margin
-    const CGFloat kHorizontalMargin = 8.0;
-    
     // usrInfoView
-    // TODO: 最外层改成StackView
     [self.usrInfoView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.contentView.mas_top);
-        make.left.mas_equalTo(kHorizontalMargin);
-        make.right.mas_equalTo(-kHorizontalMargin);
         make.height.mas_equalTo(60.0);
-    }];
-    
-    // textLbl
-    [self.textLbl mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.usrInfoView.mas_bottom).offset(kVerticalspacing);
-        make.left.mas_equalTo(kHorizontalMargin);
-        make.right.mas_equalTo(-kHorizontalMargin);
-    }];
-    
-    // meadiaView
-    [self.mediaView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.textLbl.mas_bottom).offset(kVerticalspacing);
-        make.left.mas_equalTo(self.contentView).offset(kHorizontalMargin);
-        make.right.mas_equalTo(self.contentView).offset(-kHorizontalMargin);
     }];
     
     // countLbl
     [self.countLbl mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.mediaView.mas_bottom).offset(kVerticalspacing);
-        make.left.mas_equalTo(kHorizontalMargin);
-        make.right.mas_equalTo(-kHorizontalMargin);
         make.height.mas_equalTo(30);
     }];
     
     // line
     [self.line mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.mas_equalTo(self.countLbl.mas_bottom).offset(kVerticalspacing);
-            make.left.mas_equalTo(kHorizontalMargin);
-            make.right.mas_equalTo(-kHorizontalMargin);
             make.height.mas_equalTo(1);
     }];
     
-    // interactButtonsView
-    [self.interacButtonsView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.line.mas_bottom).offset(kVerticalspacing);
-        make.left.mas_equalTo(kHorizontalMargin);
-        make.right.mas_equalTo(-kHorizontalMargin);
+    [self.stackView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.contentView);
+        make.left.equalTo(self.contentView).offset(8);
+        make.right.equalTo(self.contentView).offset(-8);
     }];
-    
+        
     // 分割线
     [self.seperator mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.interacButtonsView.mas_bottom).offset(kVerticalspacing);
-        make.left.right.mas_equalTo(self.contentView);
-        make.bottom.mas_equalTo(self.contentView.mas_bottom); // 关键
+        make.left.right.equalTo(self.contentView);
+        make.top.equalTo(self.stackView.mas_bottom);
         make.height.mas_equalTo(8.0);
+        make.bottom.equalTo(self.contentView);
     }];
+    
 }
 
 
 // 加载数据，并处理动态布局
 - (void)loadModel{
     // 头像
-    //TODO: SDWebImage加载的图片会去掉圆角
     [self.usrInfoView.avatarView sd_setImageWithURL:[NSURL URLWithString:self.model.avatar] placeholderImage:[UIImage imageNamed:@"default_avatar"]];
     
     // 昵称
@@ -221,14 +210,15 @@
     
     // vip显示
     self.usrInfoView.vipView.hidden = !self.model.vip;
-
     
     // 发文
     if (self.model.text) {
-        self.textLabel.hidden = NO;
         self.textLbl.text = self.model.text;
+        if (![self.stackView.subviews containsObject:self.textLbl]) {
+            [self.stackView insertSubview:self.textLbl atIndex:1];
+        }
     } else {
-        self.textLabel.hidden = YES;
+        [self.stackView removeArrangedSubview:self.textLbl];
     }
     
     // 配图
@@ -241,6 +231,7 @@
     const CGFloat kHorizontalMargin = 8;
     // 先清空子控件
     [self.mediaView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    [self.stackView removeArrangedSubview:self.mediaView];
     
     // 重新计算布局并添加子控件
     NSArray<NSString *> *picsArray = [NSArray arrayWithArray:self.model.pic];
@@ -258,9 +249,6 @@
                 WBImageView *imageView = [[WBImageView alloc] initWithIndex:i];
                 [imageView sd_setImageWithURL:[NSURL URLWithString:self.model.pic[i]] placeholderImage:[UIImage imageNamed:@"image_placeholder"]];
                 imageView.delegate = self;
-                // 监听来自imageView的点击事件
-//                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleImageTap:) name:@"imageTapNotification" object:nil];
-                
                 imageView.frame = CGRectMake((spacing + imageWidth) * (i % columns),
                                              (spacing + imageHeight) * (i / columns),
                                              imageWidth,
@@ -269,7 +257,7 @@
                 [self.mediaView addSubview:imageView];
             }
             
-            // 重用cell的时候，已有的约束应该更新，否则产生多个等号右边不一的方程必定冲突
+            // 确定高度
             [self.mediaView mas_updateConstraints:^(MASConstraintMaker *make) {
                 make.height.mas_equalTo(mediaViewH);
             }];
@@ -295,19 +283,18 @@
             WBImageView *imageView = [[WBImageView alloc] initWithIndex: 0];
             imageView.delegate = self;
             [imageView sd_setImageWithURL:[NSURL URLWithString:self.model.pic[0]] placeholderImage:[UIImage imageNamed:@"image_placeholder"]];
-            UIImage *image = imageView.image;
             // TODO: 能否将下载的图片按照比例绘制到imageView里
 //            const CGFloat heightWidthRatio = image.size.height / image.size.width;
 //            const CGFloat imageHeight = imageWidth * heightWidthRatio;
             imageView.frame = CGRectMake(imageX, imageY, imageWidth, imageHeight);
             [self.mediaView addSubview:imageView];
             
-            
-            // 重用cell的时候，已有的约束应该更新，否则产生多个等号左边相同，等号右边不一的方程，必定冲突
+            // 确定大小
             [self.mediaView mas_updateConstraints:^(MASConstraintMaker *make) {
                 make.height.mas_equalTo(imageHeight);
             }];
         }
+        [self.stackView insertArrangedSubview:self.mediaView atIndex:2];
     } else {
         // 没照片的话直接高度设置为0
         [self.mediaView mas_updateConstraints:^(MASConstraintMaker *make) {
@@ -321,12 +308,4 @@
     [WBImageUtils zoomInImageOfImageView:imageView];
 }
 
-//- (void)handleImageTap:(NSNotification *)notification {
-//    NSLog(@"%@----message from imageView:%@", self, notification.userInfo);
-//}
-
-//- (void)dealloc {
-//    // 注销在notification中的监听
-//    [[NSNotificationCenter defaultCenter] removeObserver:self];
-//}
 @end

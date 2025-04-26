@@ -7,15 +7,15 @@
 
 #import <UIKit/UIKit.h>
 
-@class  WBTableViewController;
+@class  WBViewController;
 
 @interface SceneDelegate : UIResponder <UIWindowSceneDelegate>
 @property (strong, nonatomic) UIWindow *window;
-@property (strong, nonatomic) WBTableViewController *homeVC;
-@property (strong, nonatomic) WBTableViewController *videoVC;
-@property (strong, nonatomic) WBTableViewController *findVC;
-@property (strong, nonatomic) WBTableViewController *messageVC;
-@property (strong, nonatomic) WBTableViewController *meVC;
+@property (strong, nonatomic) WBViewController *homeVC;
+@property (strong, nonatomic) WBViewController *videoVC;
+@property (strong, nonatomic) WBViewController *findVC;
+@property (strong, nonatomic) WBViewController *messageVC;
+@property (strong, nonatomic) WBViewController *meVC;
 
 @property (strong, nonatomic) UINavigationController *homeNC;
 @property (strong, nonatomic) UINavigationController *videoNC;

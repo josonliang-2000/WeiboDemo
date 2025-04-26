@@ -5,18 +5,20 @@
 //  Created by joson on 2025/4/18.
 //
 
-#import "WBTableViewController.h"
+#import "WBViewController.h"
 #import "WBCellModel.h"
 #import "WBTableViewCell.h"
+#import "Masonry/Masonry.h"
 
-@interface WBTableViewController ()
+@interface WBViewController ()
 
 
-@property(nonatomic, strong) NSMutableArray *wbModels;
+@property (nonatomic, strong) NSMutableArray *wbModels;
+@property (nonatomic, strong) UITableView *tableView;
 //@property(nonatomic, strong) NSDictionary<NSNumber *, NSString *> *cellPicNumToTypeDict;
 @end
 
-@implementation WBTableViewController
+@implementation WBViewController
 
 // cell类型标识
 
@@ -28,10 +30,11 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
-    // 确保使用自动布局
-    self.tableView.estimatedRowHeight = 200;
-    // 隐藏滚动条
-    self.tableView.showsVerticalScrollIndicator = NO;
+//    // 确保使用自动布局
+//    self.tableView.estimatedRowHeight = 200;
+//    // 隐藏滚动条
+//    self.tableView.showsVerticalScrollIndicator = NO;
+    [self.tableView registerClass:[WBTableViewCell class] forCellReuseIdentifier:@"cell_id"];
     
     // TODO: 测一下帧率
 //    self.cellPicNumToTypeDict = [[NSDictionary alloc] init];
@@ -47,6 +50,23 @@
 //        @8:@"WBTableCell_8Pics",
 //        @9:@"WBTableCell_9Pics",
 //    };
+}
+
+- (UITableView *)tableView {
+    if (_tableView == nil) {
+        _tableView = [[UITableView alloc] init];
+        _tableView.delegate = self;
+        _tableView.dataSource = self;
+        [self.view addSubview:_tableView];
+        
+        [_tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.edges.equalTo(self.view);
+        }];
+        
+        _tableView.estimatedRowHeight = 200;
+        _tableView.showsVerticalScrollIndicator = NO;
+    }
+    return _tableView;
 }
 
 #pragma mark - 懒加载models
@@ -87,9 +107,6 @@
     NSString *cellId = @"cell_id";
     
     WBTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
-    if (cell == nil) {
-        cell = [[WBTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellId];
-    }
     cell.model = model;
     return cell;
 }

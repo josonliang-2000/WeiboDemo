@@ -6,7 +6,7 @@
 //
 
 #import "SceneDelegate.h"
-#import "WBTableViewController.h"
+#import "WBViewController.h"
 
 @interface SceneDelegate ()
 
@@ -37,27 +37,27 @@
 
 - (void)setupRootViewController {
     // 首页
-    self.homeVC = [[WBTableViewController alloc] init];
+    self.homeVC = [[WBViewController alloc] init];
     self.homeNC = [[UINavigationController alloc] initWithRootViewController:self.homeVC];
     self.homeNC.navigationBar.translucent = NO;
     
     // 视频号
-    self.videoVC = [[WBTableViewController alloc] init];
+    self.videoVC = [[WBViewController alloc] init];
     self.videoNC = [[UINavigationController alloc] initWithRootViewController:self.videoVC];
     self.videoNC.navigationBar.translucent = NO;
     
     // 发现
-    self.findVC = [[WBTableViewController alloc] init];
+    self.findVC = [[WBViewController alloc] init];
     self.findNC = [[UINavigationController alloc] initWithRootViewController:self.findVC];
     self.findNC.navigationBar.translucent = NO;
     
     // 消息
-    self.messageVC = [[WBTableViewController alloc] init];
+    self.messageVC = [[WBViewController alloc] init];
     self.messageNC = [[UINavigationController alloc] initWithRootViewController:self.messageVC];
     self.messageNC.navigationBar.translucent = NO;
     
     // 我的
-    self.meVC = [[WBTableViewController alloc] init];
+    self.meVC = [[WBViewController alloc] init];
     self.meNC = [[UINavigationController alloc] initWithRootViewController:self.meVC];
     self.meNC.navigationBar.translucent = NO;
     

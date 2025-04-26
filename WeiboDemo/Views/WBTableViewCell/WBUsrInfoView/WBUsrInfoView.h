@@ -12,16 +12,11 @@ NS_ASSUME_NONNULL_BEGIN
 @class WBImageView;
 @interface WBUsrInfoView : UIView
 
-@property(nonatomic, strong)WBImageView *avatarView;
-@property(nonatomic, strong)UILabel *nameLbl;
-@property(nonatomic, strong)UIImageView *vipView;
-@property(nonatomic, strong)UIButton *followBtn;
+@property (nonatomic, strong) WBImageView *avatarView;
+@property (nonatomic, strong) UILabel *nameLbl;
+@property (nonatomic, strong) UIImageView *vipView;
+@property (nonatomic, strong) UIButton *followBtn;
 
-
-//- (void)setAvatarWithImageName:(NSString *)imgName;
-//- (void)setNameWithName:(NSString *)nickName;
-//- (void)displayVip;
-//- (void)hideVip;
 @end
 
 NS_ASSUME_NONNULL_END
