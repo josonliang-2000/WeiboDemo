@@ -147,13 +147,13 @@
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
     // for debug
-    void(^setborder)(UIView *, UIColor *) = ^(UIView * view, UIColor *color) {
-        view.layer.borderColor = color.CGColor;
-        view.layer.borderWidth = 4.0;
-    };
+//    void(^setborder)(UIView *, UIColor *) = ^(UIView * view, UIColor *color) {
+//        view.layer.borderColor = color.CGColor;
+//        view.layer.borderWidth = 4.0;
+//    };
 //    setborder(self.textLbl, [UIColor redColor]);
 //    setborder(self.mediaView, [UIColor blueColor]);
-    setborder(self.interacButtonsView, [UIColor greenColor]);
+//    setborder(self.interacButtonsView, [UIColor greenColor]);
 }
 
 // TODO: 封装成工具类单例
@@ -212,13 +212,11 @@
     self.usrInfoView.vipView.hidden = !self.model.vip;
     
     // 发文
-    if (self.model.text) {
+    if (![self.model.text isEqualToString:@""]) {
         self.textLbl.text = self.model.text;
-        if (![self.stackView.subviews containsObject:self.textLbl]) {
-            [self.stackView insertSubview:self.textLbl atIndex:1];
-        }
+        self.textLbl.hidden = NO;
     } else {
-        [self.stackView removeArrangedSubview:self.textLbl];
+        self.textLbl.hidden = YES;
     }
     
     // 配图
@@ -231,7 +229,6 @@
     const CGFloat kHorizontalMargin = 8;
     // 先清空子控件
     [self.mediaView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    [self.stackView removeArrangedSubview:self.mediaView];
     
     // 重新计算布局并添加子控件
     NSArray<NSString *> *picsArray = [NSArray arrayWithArray:self.model.pic];
@@ -294,12 +291,9 @@
                 make.height.mas_equalTo(imageHeight);
             }];
         }
-        [self.stackView insertArrangedSubview:self.mediaView atIndex:2];
+        self.mediaView.hidden = NO;
     } else {
-        // 没照片的话直接高度设置为0
-        [self.mediaView mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.height.mas_equalTo(0);
-        }];
+        self.mediaView.hidden = YES;
     }
  
 }

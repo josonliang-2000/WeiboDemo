@@ -68,7 +68,7 @@
         _stackView.userInteractionEnabled = NO;
         _stackView.spacing = 4;
         _stackView.axis = UILayoutConstraintAxisHorizontal;
-        _stackView.distribution = UIStackViewDistributionEqualSpacing;        _stackView.alignment = UIStackViewAlignmentCenter;
+        _stackView.alignment = UIStackViewAlignmentCenter;
     }
     return _stackView;
 }
@@ -79,7 +79,7 @@
     [self addSubview:self.stackView];
     [self setupLayout];
     // for debug
-    [self setBackgroundColor:[UIColor lightGrayColor]];
+//    [self setBackgroundColor:[UIColor lightGrayColor]];
 }
 
 
