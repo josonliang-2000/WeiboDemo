@@ -13,11 +13,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class WBImageView;
 @interface WBImageUtils : NSObject
 
-+ (void)zoomInImageOfImageView:(UIImageView *)imageView;
-+ (void)zoomOutImageOfTap:(UITapGestureRecognizer *)tap;
-+ (UIWindow *)currentWindow;
++ (instancetype)shared;
+- (UIWindow *)currentWindow;
+- (void)zoomInImageOfImageView:(WBImageView *)imageView
+                 withImageList:(NSArray<UIImageView *> *)imageViewList;
 
 @end
 

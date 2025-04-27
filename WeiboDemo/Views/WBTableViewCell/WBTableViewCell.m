@@ -24,6 +24,7 @@
 @property (nonatomic, strong) WBInteractButtonsView *interacButtonsView;
 @property (nonatomic, strong) UIView *seperator;
 @property (nonatomic, strong) UIStackView *stackView;
+@property (nonatomic, copy) NSArray<UIImageView *> *imageViewList;
 
 
 - (void) setupUI;
@@ -123,6 +124,7 @@
     }
     return _stackView;
 }
+
 
 #pragma mark - private methods
 
@@ -227,6 +229,7 @@
     // TODO: 封装成一个view
     const CGFloat spacing = 4;
     const CGFloat kHorizontalMargin = 8;
+    
     // 先清空子控件
     [self.mediaView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     
@@ -235,6 +238,7 @@
     if (picsArray.count) {
         const NSInteger picsNum = MIN(9, picsArray.count); // 最多显示9张
         const CGFloat cellWidth = [UIScreen mainScreen].bounds.size.width;
+        NSMutableArray<UIImageView *> *imageViewList = [[NSMutableArray alloc] init];
         
         // 根据行数、列数排布mediaView内的照片，以及约束mediaView的高度
         void(^arrangePicsandLayout)(int, int) = ^(int columns, int rows) {
@@ -251,9 +255,11 @@
                                              imageWidth,
                                              imageHeight
                                              );
+                
                 [self.mediaView addSubview:imageView];
+                
+                [imageViewList addObject:imageView];
             }
-            
             // 确定高度
             [self.mediaView mas_updateConstraints:^(MASConstraintMaker *make) {
                 make.height.mas_equalTo(mediaViewH);
@@ -281,10 +287,10 @@
             imageView.delegate = self;
             [imageView sd_setImageWithURL:[NSURL URLWithString:self.model.pic[0]] placeholderImage:[UIImage imageNamed:@"image_placeholder"]];
             // TODO: 能否将下载的图片按照比例绘制到imageView里
-//            const CGFloat heightWidthRatio = image.size.height / image.size.width;
-//            const CGFloat imageHeight = imageWidth * heightWidthRatio;
             imageView.frame = CGRectMake(imageX, imageY, imageWidth, imageHeight);
             [self.mediaView addSubview:imageView];
+            
+            [imageViewList addObject:imageView];
             
             // 确定大小
             [self.mediaView mas_updateConstraints:^(MASConstraintMaker *make) {
@@ -292,6 +298,7 @@
             }];
         }
         self.mediaView.hidden = NO;
+        self.imageViewList = [[NSArray alloc] initWithArray:imageViewList];
     } else {
         self.mediaView.hidden = YES;
     }
@@ -299,7 +306,7 @@
 }
 
 - (void)didTapImageView:(WBImageView *)imageView {
-    [WBImageUtils zoomInImageOfImageView:imageView];
+    [[WBImageUtils shared] zoomInImageOfImageView:imageView withImageList:self.imageViewList];
 }
 
 @end
