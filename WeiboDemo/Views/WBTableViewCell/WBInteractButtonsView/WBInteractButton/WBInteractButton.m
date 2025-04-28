@@ -103,7 +103,7 @@
 
 - (void)didTapButton {
     if ([self.name isEqualToString:@"like"]) {
-        // 获取服务器的关注状态，若关注中，则+1，否则-1
+        // 获取服务器的点赞状态，若已点赞，则+1，否则-1
         if (YES) {
             self.count++;
         } else {

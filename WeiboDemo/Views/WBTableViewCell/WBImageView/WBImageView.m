@@ -43,7 +43,6 @@
 }
 
 - (void)handleTap {
-//    [WBImageUtils zoomInImageOfImageView:self];
     if ([self.delegate respondsToSelector:@selector(didTapImageView:)]) {
         [self.delegate didTapImageView:self];
     }

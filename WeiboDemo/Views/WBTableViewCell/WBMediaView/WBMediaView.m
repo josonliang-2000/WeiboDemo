@@ -65,7 +65,7 @@
         if (picsNum >= 4) {
             // 九宫格
             int columns = 3; // 每行3个
-            int rows = ceil(1.0 * picsNum / columns); // 很奇怪，不能跟普通类型混用
+            int rows = ceil(1.0 * picsNum / columns); 
             arrangePicsandLayout(columns, rows);
         } else if (picsNum >= 2){
             // 四宫格
