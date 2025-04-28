@@ -10,9 +10,9 @@
 
 @interface WBImageView()
 
-
 - (void)addZoomInTapGesture;
 - (void)handleTap;
+
 @end
 
 
@@ -26,14 +26,6 @@
 }
 */
 # pragma mark - override
-- (instancetype)initWithImage:(UIImage *)image {
-    if (self = [super initWithImage:image]) {
-        // 添加tap放大事件
-        [self addZoomInTapGesture];
-    }
-    return self;
-}
-
 - (instancetype)initWithIndex:(NSInteger)index {
     if (self = [super init]) {
         _index = index;
@@ -56,4 +48,5 @@
         [self.delegate didTapImageView:self];
     }
 }
+
 @end

@@ -9,9 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-// TODO: 改成ViewController，里面维护一个UITableViewController
 @interface WBViewController : UIViewController<UITableViewDelegate, UITableViewDataSource>
-
 
 @end
 

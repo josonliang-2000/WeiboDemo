@@ -12,7 +12,6 @@
 
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) UIView *backgroundView;
-@property (nonatomic, assign) CGRect originFrame;
 @property (nonatomic, copy) NSArray<UIImageView *> *imageViewList;
 @property (nonatomic, assign) NSInteger currentIndex;
 @property (nonatomic, assign) CGRect screenFrame;
@@ -46,14 +45,14 @@ typedef NS_ENUM(NSInteger, WBViewTag) {
     self.imageViewList = imageViewList;
     
     // 2. 获取imageView全局frame
-    self.originFrame = [imageView convertRect:imageView.bounds toView:currentWindow];
+    const CGRect originFrame = [imageView convertRect:imageView.bounds toView:currentWindow];
     
     // 3.黑色背景设置为透明
     self.backgroundView.alpha = 0;
     
     // 4. 创建临时的imageView用于动画
     UIImageView *tempImageView = [[UIImageView alloc] initWithImage:imageView.image];
-    tempImageView.frame = self.originFrame;
+    tempImageView.frame = originFrame;
     [self.backgroundView addSubview:tempImageView];
     
     // 5. 给collectionView添加点击事件，处理缩小
@@ -115,7 +114,7 @@ typedef NS_ENUM(NSInteger, WBViewTag) {
 }
 
 - (void)handleTapOfZoommedInImage:(UITapGestureRecognizer *)tap {
-    // collectionView离屏
+    // collectionView离屏并清空cell
     [self.collectionView removeFromSuperview];
     self.collectionView = nil;
     
@@ -132,7 +131,7 @@ typedef NS_ENUM(NSInteger, WBViewTag) {
     [currentWindow addSubview:self.backgroundView];
     
     // 播放缩小动画
-    [UIView animateWithDuration:0.5 animations:^ {
+    [UIView animateWithDuration:0.4 animations:^ {
         tempImageView.frame = [imageView convertRect:imageView.bounds toView:currentWindow];
         self.backgroundView.alpha = 0;
     } completion:^(BOOL finished) {
@@ -183,7 +182,6 @@ typedef NS_ENUM(NSInteger, WBViewTag) {
     // load imageView
     UIImageView *imageView = [[UIImageView alloc] initWithImage:self.imageViewList[indexPath.item].image];
     imageView.frame = collectionView.frame;
-//    NSLog(@"%@", NSStringFromCGRect(collectionView.frame));
     imageView.contentMode = UIViewContentModeScaleAspectFit;
     imageView.backgroundColor = [UIColor blackColor];
     [cell.contentView addSubview:imageView];
@@ -197,6 +195,5 @@ typedef NS_ENUM(NSInteger, WBViewTag) {
     NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:CGPointMake(centerX, 0)];
     
     self.currentIndex = indexPath.item;
-//    NSLog(@"当前是第%ld张图片", self.currentIndex);
 }
 @end

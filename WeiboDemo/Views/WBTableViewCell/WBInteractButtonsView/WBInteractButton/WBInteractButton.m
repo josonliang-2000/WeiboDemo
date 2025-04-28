@@ -31,7 +31,7 @@
 - (instancetype)initWithImageName:(NSString *)imgName andNumber:(NSInteger)count {
     if(self = [super init]) {
         [self setupUI];
-        [_iconView setImage:[UIImage imageNamed:imgName]];
+        [self.iconView setImage:[UIImage imageNamed:imgName]];
         _name = imgName;
         self.count = count;
         
@@ -84,7 +84,6 @@
 
 
 - (void) setupLayout {
-    
     [self.iconView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.height.width.mas_equalTo(16);
     }];

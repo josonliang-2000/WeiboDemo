@@ -13,8 +13,8 @@ NS_ASSUME_NONNULL_BEGIN
 @class WBCellModel;
 @interface WBTableViewCell : UITableViewCell<WBImageViewDelegate>
 
-// model
 @property(nonatomic, copy)WBCellModel *model;
+@property (nonatomic, copy) NSArray<UIImageView *> *imageViewList;
 
 @end
 

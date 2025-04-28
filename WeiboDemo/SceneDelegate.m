@@ -17,9 +17,8 @@
 
 - (void)scene:(UIScene *)scene willConnectToSession:(UISceneSession *)session options:(UISceneConnectionOptions *)connectionOptions {
     
-    // 1. 初始化 Window 并关联 Scene（关键修复点）
+    // 1. 初始化 Window 并关联 Scene
     if ([scene isKindOfClass:[UIWindowScene class]]) {
-        // TODO: UIWindowScene
         UIWindowScene *windowScene = (UIWindowScene *)scene;
         self.window = [[UIWindow alloc] initWithWindowScene:windowScene];
         self.window.frame = windowScene.coordinateSpace.bounds;
@@ -77,7 +76,6 @@
     self.meNC.tabBarItem = [self systemTabBarItemWithTitle:@"我" systemIconName:@"person" selectedIconName:@"person.fill"];
 }
 
-// 工具方法：创建系统图标的 UITabBarItem
 - (UITabBarItem *)systemTabBarItemWithTitle:(NSString *)title
                              systemIconName:(NSString *)iconName
                            selectedIconName:(NSString *)selectedIconName {

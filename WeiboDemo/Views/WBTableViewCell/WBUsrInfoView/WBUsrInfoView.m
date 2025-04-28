@@ -21,51 +21,57 @@
 - (instancetype)init {
     if (self = [super init]) {
         [self setupUI];
-        
-        [_followBtn addTarget:self action:@selector(didTapFollowBtn) forControlEvents:UIControlEventTouchUpInside];
+        [self.followBtn addTarget:self action:@selector(didTapFollowBtn) forControlEvents:UIControlEventTouchUpInside];
     }
     return self;
 }
 
 
 - (void)setupUI {
-    _avatarView = [[WBImageView alloc] init];
-    _nameLbl = [[UILabel alloc] init];
-    _vipView = [[UIImageView alloc] init];
-    _followBtn = [[UIButton alloc] init];
-    
-    [self initStyle];
-    
-    [self addSubview:_avatarView];
-    [self addSubview:_nameLbl];
-    [self addSubview:_vipView];
-    [self addSubview:_followBtn];
+    [self addSubview:self.avatarView];
+    [self addSubview:self.nameLbl];
+    [self addSubview:self.vipView];
+    [self addSubview:self.followBtn];
     
     [self setupLayout];
 }
 
-- (void)initStyle {
-    // for debug
-//    [_avatarView setBackgroundColor: [UIColor grayColor]];
-//    [_nameLbl setBackgroundColor:[UIColor lightGrayColor]];
-//    [_vipView setBackgroundColor:[UIColor yellowColor]];
-    
-    _avatarView.clipsToBounds = YES;
-    
-    _nameLbl.font = [UIFont systemFontOfSize:14];
+- (WBImageView *)avatarView {
+    if (_avatarView == nil) {
+        _avatarView = [[WBImageView alloc] init];
+        _avatarView.clipsToBounds = YES;
+    }
+    return _avatarView;
+}
 
-    [_vipView setImage:[UIImage imageNamed:@"vip"]];
-    
-    [_followBtn setBackgroundColor:[UIColor clearColor]];
-    _followBtn.layer.borderColor = [UIColor orangeColor].CGColor;
-    _followBtn.layer.borderWidth = 1.0;
-    _followBtn.titleLabel.font = [UIFont systemFontOfSize:14];
-    
-    // TODO: 应该从服务端获取关注状态后更新，否则可重用的cell无法
-    [_followBtn setTitle:@"+关注" forState:UIControlStateNormal];
-    [_followBtn setTitleColor:[UIColor colorWithRed:230/255.0 green:90/255.0 blue:0/255.0 alpha:1.0] forState:UIControlStateNormal];
-    [_followBtn setTitleColor:[UIColor brownColor] forState:UIControlStateHighlighted];
+- (UILabel *)nameLbl {
+    if (_nameLbl == nil) {
+        _nameLbl = [[UILabel alloc] init];
+        _nameLbl.font = [UIFont systemFontOfSize:14];
+    }
+    return _nameLbl;
+}
 
+- (UIImageView *)vipView {
+    if (_vipView == nil) {
+        _vipView = [[UIImageView alloc] init];
+        [_vipView setImage:[UIImage imageNamed:@"vip"]];
+    }
+    return _vipView;
+}
+
+- (UIButton *)followBtn {
+    if (_followBtn == nil) {
+        _followBtn = [[UIButton alloc] init];
+        [_followBtn setBackgroundColor:[UIColor clearColor]];
+        _followBtn.layer.borderColor = [UIColor orangeColor].CGColor;
+        _followBtn.layer.borderWidth = 1.0;
+        _followBtn.titleLabel.font = [UIFont systemFontOfSize:14];
+        [_followBtn setTitle:@"+关注" forState:UIControlStateNormal];
+        [_followBtn setTitleColor:[UIColor colorWithRed:230/255.0 green:90/255.0 blue:0/255.0 alpha:1.0] forState:UIControlStateNormal];
+        [_followBtn setTitleColor:[UIColor brownColor] forState:UIControlStateHighlighted];
+    }
+    return _followBtn;
 }
 
 - (void)setupLayout {
@@ -102,16 +108,6 @@
 }
 
 #pragma mark - public methods
-
-- (void)setAvatarWithImageName:(NSString *)imgName {
-    // TODO: 换成SDImage
-    _avatarView.image = [UIImage imageNamed:imgName];
-}
-
-- (void)setNameWithName:(NSString *)nickName {
-    _nameLbl.text = nickName;
-}
-
 - (void)didTapFollowBtn {
     // TODO: 应该从服务端获取关注状态后更新，否则可重用的cell无法
     if ([_followBtn.titleLabel.text isEqualToString:@"+关注"]) {
@@ -121,11 +117,4 @@
     }
 }
 
-- (void)displayVip {
-    self.vipView.hidden = NO;
-}
-
-- (void)hideVip {
-    self.vipView.hidden = YES;
-}
 @end

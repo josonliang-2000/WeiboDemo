@@ -12,27 +12,27 @@
 #import "WBImageView.h"
 #import "Masonry/Masonry.h"
 #import "WBImageUtils.h"
+#import "WBMediaView.h"
 #import "SDWebImage/SDWebImage.h"
+
 
 @interface WBTableViewCell()
 // 子控件
 @property (nonatomic, strong) WBUsrInfoView *usrInfoView;
 @property (nonatomic, strong) UILabel *textLbl;
-@property (nonatomic, strong) UIView *mediaView;
+@property (nonatomic, strong) WBMediaView *mediaView;
 @property (nonatomic, strong) UILabel *countLbl;
 @property (nonatomic, strong) UIView *line;
 @property (nonatomic, strong) WBInteractButtonsView *interacButtonsView;
 @property (nonatomic, strong) UIView *seperator;
 @property (nonatomic, strong) UIStackView *stackView;
-@property (nonatomic, copy) NSArray<UIImageView *> *imageViewList;
-
 
 - (void) setupUI;
 - (void)initStyle;
 - (NSString *)formattedCount:(NSInteger) num;
 - (void)setupLayout;
 - (void)loadModel;
-- (void)setMediaViewFrame;
+//- (void)setMediaViewFrame;
 
 // for WBImageViewProtocol
 - (void)didTapImageView:(WBImageView *)imageView;
@@ -76,7 +76,7 @@
 
 - (UIView *)mediaView {
     if (_mediaView == nil) {
-        _mediaView = [[UIView alloc] init];
+        _mediaView = [[WBMediaView alloc] init];
     }
     return _mediaView;
 }
@@ -99,7 +99,6 @@
     }
     return _line;
 }
-
 
 - (WBInteractButtonsView *)interacButtonsView {
     if (_interacButtonsView == nil) {
@@ -158,7 +157,6 @@
 //    setborder(self.interacButtonsView, [UIColor greenColor]);
 }
 
-// TODO: 封装成工具类单例
 - (NSString *)formattedCount:(NSInteger) num {
     if (num <= 9999) {
         return [NSString stringWithFormat:@"%ld", num];
@@ -201,7 +199,6 @@
     
 }
 
-
 // 加载数据，并处理动态布局
 - (void)loadModel{
     // 头像
@@ -222,88 +219,88 @@
     }
     
     // 配图
-    [self setMediaViewFrame];
+    [self.mediaView setImageViews:self.model.pic andDelegate:self];
 }
 
-- (void)setMediaViewFrame {
-    // TODO: 封装成一个view
-    const CGFloat spacing = 4;
-    const CGFloat kHorizontalMargin = 8;
-    
-    // 先清空子控件
-    [self.mediaView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    
-    // 重新计算布局并添加子控件
-    NSArray<NSString *> *picsArray = [NSArray arrayWithArray:self.model.pic];
-    if (picsArray.count) {
-        const NSInteger picsNum = MIN(9, picsArray.count); // 最多显示9张
-        const CGFloat cellWidth = [UIScreen mainScreen].bounds.size.width;
-        NSMutableArray<UIImageView *> *imageViewList = [[NSMutableArray alloc] init];
-        
-        // 根据行数、列数排布mediaView内的照片，以及约束mediaView的高度
-        void(^arrangePicsandLayout)(int, int) = ^(int columns, int rows) {
-            CGFloat imageWidth = (cellWidth - spacing * (columns - 1) - kHorizontalMargin * 2) / columns;
-            CGFloat imageHeight = imageWidth;
-            CGFloat mediaViewH = imageHeight * rows + spacing * (rows - 1);
-            for (int i = 0; i < picsNum; i++) {
-                // TODO: 封装imageView创建
-                WBImageView *imageView = [[WBImageView alloc] initWithIndex:i];
-                [imageView sd_setImageWithURL:[NSURL URLWithString:self.model.pic[i]] placeholderImage:[UIImage imageNamed:@"image_placeholder"]];
-                imageView.delegate = self;
-                imageView.frame = CGRectMake((spacing + imageWidth) * (i % columns),
-                                             (spacing + imageHeight) * (i / columns),
-                                             imageWidth,
-                                             imageHeight
-                                             );
-                
-                [self.mediaView addSubview:imageView];
-                
-                [imageViewList addObject:imageView];
-            }
-            // 确定高度
-            [self.mediaView mas_updateConstraints:^(MASConstraintMaker *make) {
-                make.height.mas_equalTo(mediaViewH);
-            }];
-        };
-        
-        if (picsNum >= 4) {
-            // 九宫格
-            int columns = 3; // 每行3个
-            int rows = ceil(1.0 * picsNum / columns); // 很奇怪，不能跟普通类型混用
-            arrangePicsandLayout(columns, rows);
-        } else if (picsNum >= 2){
-            // 四宫格
-            int columns = 2; // 每行2个
-            int rows = ceil(1.0 * picsNum / columns);
-            arrangePicsandLayout(columns, rows);
-        } else {
-            // 单张图按比例
-            const CGFloat imageWidth = 250.0;
-            const CGFloat imageHeight = imageWidth;
-            const CGFloat imageX = 0;
-            const CGFloat imageY = 0;
-            
-            WBImageView *imageView = [[WBImageView alloc] initWithIndex: 0];
-            imageView.delegate = self;
-            [imageView sd_setImageWithURL:[NSURL URLWithString:self.model.pic[0]] placeholderImage:[UIImage imageNamed:@"image_placeholder"]];
-            // TODO: 能否将下载的图片按照比例绘制到imageView里
-            imageView.frame = CGRectMake(imageX, imageY, imageWidth, imageHeight);
-            [self.mediaView addSubview:imageView];
-            
-            [imageViewList addObject:imageView];
-            
-            // 确定大小
-            [self.mediaView mas_updateConstraints:^(MASConstraintMaker *make) {
-                make.height.mas_equalTo(imageHeight);
-            }];
-        }
-        self.mediaView.hidden = NO;
-        self.imageViewList = [[NSArray alloc] initWithArray:imageViewList];
-    } else {
-        self.mediaView.hidden = YES;
-    }
- 
-}
+//- (void)setMediaViewFrame {
+//    // TODO: 封装成一个view
+//    const CGFloat spacing = 4;
+//    const CGFloat kHorizontalMargin = 8;
+//    
+//    // 先清空子控件
+//    [self.mediaView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+//    
+//    // 重新计算布局并添加子控件
+//    NSArray<NSString *> *picsArray = [NSArray arrayWithArray:self.model.pic];
+//    if (picsArray.count) {
+//        const NSInteger picsNum = MIN(9, picsArray.count); // 最多显示9张
+//        const CGFloat cellWidth = [UIScreen mainScreen].bounds.size.width;
+//        NSMutableArray<UIImageView *> *imageViewList = [[NSMutableArray alloc] init];
+//        
+//        // 根据行数、列数排布mediaView内的照片，以及约束mediaView的高度
+//        void(^arrangePicsandLayout)(int, int) = ^(int columns, int rows) {
+//            CGFloat imageWidth = (cellWidth - spacing * (columns - 1) - kHorizontalMargin * 2) / columns;
+//            CGFloat imageHeight = imageWidth;
+//            CGFloat mediaViewH = imageHeight * rows + spacing * (rows - 1);
+//            for (int i = 0; i < picsNum; i++) {
+//                // TODO: 封装imageView创建
+//                WBImageView *imageView = [[WBImageView alloc] initWithIndex:i];
+//                [imageView sd_setImageWithURL:[NSURL URLWithString:self.model.pic[i]] placeholderImage:[UIImage imageNamed:@"image_placeholder"]];
+//                imageView.delegate = self;
+//                imageView.frame = CGRectMake((spacing + imageWidth) * (i % columns),
+//                                             (spacing + imageHeight) * (i / columns),
+//                                             imageWidth,
+//                                             imageHeight
+//                                             );
+//                
+//                [self.mediaView addSubview:imageView];
+//                
+//                [imageViewList addObject:imageView];
+//            }
+//            // 确定高度
+//            [self.mediaView mas_updateConstraints:^(MASConstraintMaker *make) {
+//                make.height.mas_equalTo(mediaViewH);
+//            }];
+//        };
+//        
+//        if (picsNum >= 4) {
+//            // 九宫格
+//            int columns = 3; // 每行3个
+//            int rows = ceil(1.0 * picsNum / columns); // 很奇怪，不能跟普通类型混用
+//            arrangePicsandLayout(columns, rows);
+//        } else if (picsNum >= 2){
+//            // 四宫格
+//            int columns = 2; // 每行2个
+//            int rows = ceil(1.0 * picsNum / columns);
+//            arrangePicsandLayout(columns, rows);
+//        } else {
+//            // 单张图按比例
+//            const CGFloat imageWidth = 250.0;
+//            const CGFloat imageHeight = imageWidth;
+//            const CGFloat imageX = 0;
+//            const CGFloat imageY = 0;
+//            
+//            WBImageView *imageView = [[WBImageView alloc] initWithIndex: 0];
+//            imageView.delegate = self;
+//            [imageView sd_setImageWithURL:[NSURL URLWithString:self.model.pic[0]] placeholderImage:[UIImage imageNamed:@"image_placeholder"]];
+//            // TODO: 能否将下载的图片按照比例绘制到imageView里
+//            imageView.frame = CGRectMake(imageX, imageY, imageWidth, imageHeight);
+//            [self.mediaView addSubview:imageView];
+//            
+//            [imageViewList addObject:imageView];
+//            
+//            // 确定大小
+//            [self.mediaView mas_updateConstraints:^(MASConstraintMaker *make) {
+//                make.height.mas_equalTo(imageHeight);
+//            }];
+//        }
+//        self.mediaView.hidden = NO;
+//        self.imageViewList = [[NSArray alloc] initWithArray:imageViewList];
+//    } else {
+//        self.mediaView.hidden = YES;
+//    }
+// 
+//}
 
 - (void)didTapImageView:(WBImageView *)imageView {
     [[WBImageUtils shared] zoomInImageOfImageView:imageView withImageList:self.imageViewList];

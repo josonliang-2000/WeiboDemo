@@ -12,10 +12,10 @@
 
 @interface WBViewController ()
 
-
 @property (nonatomic, strong) NSMutableArray *wbModels;
 @property (nonatomic, strong) UITableView *tableView;
 //@property(nonatomic, strong) NSDictionary<NSNumber *, NSString *> *cellPicNumToTypeDict;
+
 @end
 
 @implementation WBViewController
@@ -27,10 +27,6 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
-//    // 确保使用自动布局
-//    self.tableView.estimatedRowHeight = 200;
-//    // 隐藏滚动条
-//    self.tableView.showsVerticalScrollIndicator = NO;
     [self.tableView registerClass:[WBTableViewCell class] forCellReuseIdentifier:@"cell_id"];
     
     // TODO: 测一下帧率
@@ -93,22 +89,15 @@
     return self.wbModels.count;
 }
 
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    // 1. 获取模型数据
+    // 获取模型数据
     WBCellModel *model = _wbModels[indexPath.row];
     
-    // 2. 创建cell
-//    NSNumber *picsNum = [[NSNumber alloc] initWithLong:model.pic.count];
-//    NSString *cellId = cellPicNumToTypeDict[picsNum];
-    NSString *cellId = @"cell_id";
-    
-    WBTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
+    WBTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell_id"];
     cell.model = model;
     return cell;
 }
 
-// TODO: 了解一下自动调整高度的底层
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return UITableViewAutomaticDimension;
 }
