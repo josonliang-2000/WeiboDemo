@@ -67,14 +67,11 @@ typedef NS_ENUM(NSInteger, WBViewTag) {
         tempImageView.contentMode = UIViewContentModeScaleAspectFit;
          self.backgroundView.alpha = 1;
      } completion:^(BOOL finished) {
-         // 动画完成后显示CollectionView
-         [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:self.currentIndex inSection:0] atScrollPosition:UICollectionViewScrollPositionNone animated:NO];
          [tempImageView removeFromSuperview];
          [self.backgroundView removeFromSuperview];
-         
+         // 动画完成后显示CollectionView
+         [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:self.currentIndex inSection:0] atScrollPosition:UICollectionViewScrollPositionNone animated:NO];
          [currentWindow addSubview:self.collectionView];
-         self.collectionView.alpha = 1;
-
      }];
 }
 
@@ -101,7 +98,6 @@ typedef NS_ENUM(NSInteger, WBViewTag) {
         _collectionView .backgroundColor = [UIColor grayColor];
         _collectionView.pagingEnabled = YES;
         _collectionView.showsHorizontalScrollIndicator = NO;
-        _collectionView.alpha = 0;
         [_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"cell"];
         _collectionView.dataSource = self;
         _collectionView.delegate = self;
