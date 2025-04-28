@@ -28,6 +28,10 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
     [self.tableView registerClass:[WBTableViewCell class] forCellReuseIdentifier:@"cell_id"];
+    [self.view addSubview:_tableView];
+    [_tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(self.view);
+    }];
     
     // TODO: 测一下帧率
 //    self.cellPicNumToTypeDict = [[NSDictionary alloc] init];
@@ -50,12 +54,6 @@
         _tableView = [[UITableView alloc] init];
         _tableView.delegate = self;
         _tableView.dataSource = self;
-        [self.view addSubview:_tableView];
-        
-        [_tableView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.edges.equalTo(self.view);
-        }];
-        
         _tableView.estimatedRowHeight = 200;
         _tableView.showsVerticalScrollIndicator = NO;
     }

@@ -27,15 +27,6 @@
 @property (nonatomic, strong) UIView *seperator;
 @property (nonatomic, strong) UIStackView *stackView;
 
-- (void) setupUI;
-- (void)initStyle;
-- (NSString *)formattedCount:(NSInteger) num;
-- (void)setupLayout;
-- (void)loadModel;
-//- (void)setMediaViewFrame;
-
-// for WBImageViewProtocol
-- (void)didTapImageView:(WBImageView *)imageView;
 @end
 
 @implementation WBTableViewCell
@@ -49,81 +40,6 @@
     }
     return self;
 }
-
-// 复用cell时重新加载数据即可
-- (void)setModel:(WBCellModel *)model {
-    _model = model;
-    [self loadModel];
-
-}
-
-- (WBUsrInfoView *)usrInfoView {
-    if (_usrInfoView == nil) {
-        _usrInfoView = [[WBUsrInfoView alloc] init];
-        _usrInfoView.avatarView.delegate = self;
-    }
-    return _usrInfoView;
-}
-
-- (UILabel *)textLbl {
-    if (_textLbl == nil) {
-        _textLbl = [[UILabel alloc] init];
-        _textLbl.font = [UIFont systemFontOfSize:14];
-        _textLbl.numberOfLines = 0; // 允许多行显示
-    }
-    return _textLbl;
-}
-
-- (UIView *)mediaView {
-    if (_mediaView == nil) {
-        _mediaView = [[WBMediaView alloc] init];
-    }
-    return _mediaView;
-}
-
-- (UILabel *)countLbl {
-    if (_countLbl == nil) {
-        _countLbl = [[UILabel alloc] init];
-        _countLbl.font = [UIFont systemFontOfSize:14];
-        const NSInteger cnt = 338;
-        [_countLbl setText:[NSString stringWithFormat:@"%@人🤩😎🤓", [self formattedCount:cnt]]];
-        _countLbl.textAlignment = NSTextAlignmentRight;
-    }
-    return _countLbl;
-}
-
-- (UIView *)line {
-    if (_line == nil) {
-        _line = [[UIView alloc] init];
-        _line.backgroundColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1.0];
-    }
-    return _line;
-}
-
-- (WBInteractButtonsView *)interacButtonsView {
-    if (_interacButtonsView == nil) {
-        _interacButtonsView = [[WBInteractButtonsView alloc] init];
-    }
-    return _interacButtonsView;
-}
-
-- (UIView *)seperator {
-    if (_seperator == nil) {
-        _seperator = [[UIView alloc] init];
-        _seperator.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
-    }
-    return _seperator;
-}
-
-- (UIStackView *)stackView {
-    if (_stackView == nil) {
-        _stackView = [[UIStackView alloc] init];
-        _stackView.axis = UILayoutConstraintAxisVertical;
-        _stackView.spacing = 6.0;
-    }
-    return _stackView;
-}
-
 
 #pragma mark - private methods
 
@@ -202,13 +118,16 @@
 // 加载数据，并处理动态布局
 - (void)loadModel{
     // 头像
-    [self.usrInfoView.avatarView sd_setImageWithURL:[NSURL URLWithString:self.model.avatar] placeholderImage:[UIImage imageNamed:@"default_avatar"]];
+    [self.usrInfoView.avatarView sd_setImageWithURL:[NSURL URLWithString:self.model.avatar]];
     
     // 昵称
     self.usrInfoView.nameLbl.text = self.model.name;
     
     // vip显示
-    self.usrInfoView.vipView.hidden = !self.model.vip;
+    self.usrInfoView.vipView.hidden = !self.model.isVip;
+    
+    // 关注按钮
+    self.usrInfoView.followBtn.selected = NO;
     
     // 发文
     if (![self.model.text isEqualToString:@""]) {
@@ -219,11 +138,89 @@
     }
     
     // 配图
-    [self.mediaView setImageViews:self.model.pic andDelegate:self];
+    [self.mediaView setImageViews:self.model.pic andImagesDelegate:self];
 }
 
 - (void)didTapImageView:(WBImageView *)imageView {
-    [[WBImageUtils shared] zoomInImageOfImageView:imageView withImageList:self.imageViewList];
+    [[WBImageUtils shared] zoomInImageOfImageView:imageView withImageUrlList:self.model.pic];
+}
+
+#pragma mark - getter
+
+- (WBUsrInfoView *)usrInfoView {
+    if (_usrInfoView == nil) {
+        _usrInfoView = [[WBUsrInfoView alloc] init];
+        _usrInfoView.avatarView.delegate = self;
+    }
+    return _usrInfoView;
+}
+
+- (UILabel *)textLbl {
+    if (_textLbl == nil) {
+        _textLbl = [[UILabel alloc] init];
+        _textLbl.font = [UIFont systemFontOfSize:14];
+        _textLbl.numberOfLines = 0; // 允许多行显示
+    }
+    return _textLbl;
+}
+
+- (UIView *)mediaView {
+    if (_mediaView == nil) {
+        _mediaView = [[WBMediaView alloc] init];
+    }
+    return _mediaView;
+}
+
+- (UILabel *)countLbl {
+    if (_countLbl == nil) {
+        _countLbl = [[UILabel alloc] init];
+        _countLbl.font = [UIFont systemFontOfSize:14];
+        const NSInteger cnt = 338;
+        [_countLbl setText:[NSString stringWithFormat:@"%@人🤩😎🤓", [self formattedCount:cnt]]];
+        _countLbl.textAlignment = NSTextAlignmentRight;
+    }
+    return _countLbl;
+}
+
+- (UIView *)line {
+    if (_line == nil) {
+        _line = [[UIView alloc] init];
+        _line.backgroundColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1.0];
+    }
+    return _line;
+}
+
+- (WBInteractButtonsView *)interacButtonsView {
+    if (_interacButtonsView == nil) {
+        _interacButtonsView = [[WBInteractButtonsView alloc] init];
+    }
+    return _interacButtonsView;
+}
+
+- (UIView *)seperator {
+    if (_seperator == nil) {
+        _seperator = [[UIView alloc] init];
+        _seperator.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
+    }
+    return _seperator;
+}
+
+- (UIStackView *)stackView {
+    if (_stackView == nil) {
+        _stackView = [[UIStackView alloc] init];
+        _stackView.axis = UILayoutConstraintAxisVertical;
+        _stackView.spacing = 6.0;
+    }
+    return _stackView;
+}
+
+#pragma mark - setter
+
+// 复用cell时重新加载数据即可
+- (void)setModel:(WBCellModel *)model {
+    _model = model;
+    [self loadModel];
+
 }
 
 @end

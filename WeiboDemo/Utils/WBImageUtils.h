@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)shared;
 - (UIWindow *)currentWindow;
 - (void)zoomInImageOfImageView:(WBImageView *)imageView
-                 withImageList:(NSArray<UIImageView *> *)imageViewList;
+              withImageUrlList:(NSArray<NSString *> *)imageUrlList;
 
 @end
 

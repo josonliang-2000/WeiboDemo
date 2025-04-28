@@ -12,12 +12,15 @@
 @implementation WBUsrInfoView
 
 /*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
+ // Only override drawRect: if you perform custom drawing.
+ // An empty implementation adversely affects performance during animation.
+ - (void)drawRect:(CGRect)rect {
+ // Drawing code
+ }
+ */
+
+#pragma mark public methods
+
 - (instancetype)init {
     if (self = [super init]) {
         [self setupUI];
@@ -27,6 +30,8 @@
 }
 
 
+# pragma mark private methods
+
 - (void)setupUI {
     [self addSubview:self.avatarView];
     [self addSubview:self.nameLbl];
@@ -34,44 +39,6 @@
     [self addSubview:self.followBtn];
     
     [self setupLayout];
-}
-
-- (WBImageView *)avatarView {
-    if (_avatarView == nil) {
-        _avatarView = [[WBImageView alloc] init];
-        _avatarView.clipsToBounds = YES;
-    }
-    return _avatarView;
-}
-
-- (UILabel *)nameLbl {
-    if (_nameLbl == nil) {
-        _nameLbl = [[UILabel alloc] init];
-        _nameLbl.font = [UIFont systemFontOfSize:14];
-    }
-    return _nameLbl;
-}
-
-- (UIImageView *)vipView {
-    if (_vipView == nil) {
-        _vipView = [[UIImageView alloc] init];
-        [_vipView setImage:[UIImage imageNamed:@"vip"]];
-    }
-    return _vipView;
-}
-
-- (UIButton *)followBtn {
-    if (_followBtn == nil) {
-        _followBtn = [[UIButton alloc] init];
-        [_followBtn setBackgroundColor:[UIColor clearColor]];
-        _followBtn.layer.borderColor = [UIColor orangeColor].CGColor;
-        _followBtn.layer.borderWidth = 1.0;
-        _followBtn.titleLabel.font = [UIFont systemFontOfSize:14];
-        [_followBtn setTitle:@"+关注" forState:UIControlStateNormal];
-        [_followBtn setTitleColor:[UIColor colorWithRed:230/255.0 green:90/255.0 blue:0/255.0 alpha:1.0] forState:UIControlStateNormal];
-        [_followBtn setTitleColor:[UIColor brownColor] forState:UIControlStateHighlighted];
-    }
-    return _followBtn;
 }
 
 - (void)setupLayout {
@@ -107,14 +74,51 @@
     _followBtn.layer.cornerRadius = 4;
 }
 
-#pragma mark - public methods
 - (void)didTapFollowBtn {
-    // TODO: 应该从服务端获取关注状态后更新，否则可重用的cell无法
-    if ([_followBtn.titleLabel.text isEqualToString:@"+关注"]) {
-        [_followBtn setTitle:@"取消关注" forState:UIControlStateNormal];
-    } else {
-        [_followBtn setTitle:@"+关注" forState:UIControlStateNormal];
+    self.followBtn.selected = !self.followBtn.selected;
+    // 修改数据库的值
+}
+
+#pragma mark - getter
+
+- (WBImageView *)avatarView {
+    if (_avatarView == nil) {
+        _avatarView = [[WBImageView alloc] init];
+        _avatarView.clipsToBounds = YES;
     }
+    return _avatarView;
+}
+
+- (UILabel *)nameLbl {
+    if (_nameLbl == nil) {
+        _nameLbl = [[UILabel alloc] init];
+        _nameLbl.font = [UIFont systemFontOfSize:14];
+    }
+    return _nameLbl;
+}
+
+- (UIImageView *)vipView {
+    if (_vipView == nil) {
+        _vipView = [[UIImageView alloc] init];
+        [_vipView setImage:[UIImage imageNamed:@"vip"]];
+    }
+    return _vipView;
+}
+
+- (UIButton *)followBtn {
+    if (_followBtn == nil) {
+        _followBtn = [[UIButton alloc] init];
+        [_followBtn setBackgroundColor:[UIColor clearColor]];
+        _followBtn.layer.borderWidth = 1.0;
+        self.followBtn.layer.borderColor = [UIColor orangeColor].CGColor;
+        _followBtn.titleLabel.font = [UIFont systemFontOfSize:14];
+        [_followBtn setTitle:@"+关注" forState:UIControlStateNormal];
+        [_followBtn setTitle:@"已关注" forState:UIControlStateSelected];
+        
+        [_followBtn setTitleColor:[UIColor colorWithRed:230/255.0 green:90/255.0 blue:0/255.0 alpha:1.0] forState:UIControlStateNormal];
+        [_followBtn setTitleColor:[UIColor grayColor] forState:UIControlStateSelected];
+    }
+    return _followBtn;
 }
 
 @end

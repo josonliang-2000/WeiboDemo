@@ -7,12 +7,13 @@
 
 #import "WBImageUtils.h"
 #import "WBImageView.h"
+#import "SDWebImage/SDWebImage.h"
 
 @interface WBImageUtils()<UICollectionViewDataSource, UICollectionViewDelegate>
 
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) UIView *backgroundView;
-@property (nonatomic, copy) NSArray<UIImageView *> *imageViewList;
+@property (nonatomic, copy) NSArray<NSString *> *imageUrlList;
 @property (nonatomic, assign) NSInteger currentIndex;
 @property (nonatomic, assign) CGRect screenFrame;
 
@@ -22,11 +23,6 @@
 
 @implementation WBImageUtils
 
-typedef NS_ENUM(NSInteger, WBViewTag) {
-    WBViewTagOfTempBackgroundView = 19999,
-    WBViewTagOfTempImageView
-};
- 
 
 #pragma  mark - public methods
 + (instancetype)shared {
@@ -38,11 +34,11 @@ typedef NS_ENUM(NSInteger, WBViewTag) {
     return instance;
 }
 
-- (void)zoomInImageOfImageView:(WBImageView *)imageView withImageList:(NSArray<UIImageView *> *)imageViewList {
+- (void)zoomInImageOfImageView:(WBImageView *)imageView withImageUrlList:(NSArray<NSString *> *)imageUrlList {
     // 1. 初始化数据
     UIWindow *currentWindow = [self currentWindow];
     self.currentIndex = imageView.index;
-    self.imageViewList = imageViewList;
+    self.imageUrlList = imageUrlList;
     
     // 2. 获取imageView全局frame
     const CGRect originFrame = [imageView convertRect:imageView.bounds toView:currentWindow];
@@ -51,7 +47,7 @@ typedef NS_ENUM(NSInteger, WBViewTag) {
     self.backgroundView.alpha = 0;
     
     // 4. 创建临时的imageView用于动画
-    UIImageView *tempImageView = [[UIImageView alloc] initWithImage:imageView.image];
+    UIImageView *tempImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"image_placeholder"]];
     tempImageView.frame = originFrame;
     [self.backgroundView addSubview:tempImageView];
     
@@ -75,7 +71,53 @@ typedef NS_ENUM(NSInteger, WBViewTag) {
      }];
 }
 
+- (UIWindow *)currentWindow {
+    UIWindow *currentWindow;
+    if (@available(iOS 13.0, *)) {
+        // 从已连接的Scene中获取第一个活跃的窗口
+        for (UIWindowScene *scene in [UIApplication sharedApplication].connectedScenes) {
+            if (scene.activationState == UISceneActivationStateForegroundActive) {
+                currentWindow = scene.windows.firstObject;
+                break;
+            }
+        }
+    } else {
+        currentWindow = [UIApplication sharedApplication].keyWindow;
+    }
+    return currentWindow;
+}
+
 #pragma mark - private methods
+
+- (void)handleTapOfZoommedInImage:(UITapGestureRecognizer *)tap {
+    // collectionView离屏并清空cell
+    [self.collectionView removeFromSuperview];
+    self.collectionView = nil;
+    
+//    // 取出九宫格的那个imageView
+//    UIImageView *imageView = self.imageViewList[self.currentIndex];
+//    // 创建临时tempImageView
+//    UIImageView *tempImageView = [[UIImageView alloc] initWithImage:imageView.image];
+//    tempImageView.frame = self.collectionView.frame;
+//    tempImageView.contentMode = UIViewContentModeScaleAspectFit;
+//    // 加入到backgroundView
+//    [self.backgroundView addSubview:tempImageView];
+//    // 显示backgroundView
+//    UIWindow *currentWindow = [self currentWindow];
+//    [currentWindow addSubview:self.backgroundView];
+//    
+//    // 播放缩小动画
+//    [UIView animateWithDuration:0.4 animations:^ {
+//        tempImageView.frame = [imageView convertRect:imageView.bounds toView:currentWindow];
+//        self.backgroundView.alpha = 0;
+//    } completion:^(BOOL finished) {
+//        [tempImageView removeFromSuperview];
+//        [self.backgroundView removeFromSuperview];
+//    }];
+    
+}
+
+#pragma mark getter
 
 - (UIView *)backgroundView {
     if (_backgroundView == nil) {
@@ -109,53 +151,6 @@ typedef NS_ENUM(NSInteger, WBViewTag) {
     return [UIScreen mainScreen].bounds;
 }
 
-- (void)handleTapOfZoommedInImage:(UITapGestureRecognizer *)tap {
-    // collectionView离屏并清空cell
-    [self.collectionView removeFromSuperview];
-    self.collectionView = nil;
-    
-    // 取出九宫格的那个imageView
-    UIImageView *imageView = self.imageViewList[self.currentIndex];
-    // 创建临时tempImageView
-    UIImageView *tempImageView = [[UIImageView alloc] initWithImage:imageView.image];
-    tempImageView.frame = self.collectionView.frame;
-    tempImageView.contentMode = UIViewContentModeScaleAspectFit;
-    // 加入到backgroundView
-    [self.backgroundView addSubview:tempImageView];
-    // 显示backgroundView
-    UIWindow *currentWindow = [self currentWindow];
-    [currentWindow addSubview:self.backgroundView];
-    
-    // 播放缩小动画
-    [UIView animateWithDuration:0.4 animations:^ {
-        tempImageView.frame = [imageView convertRect:imageView.bounds toView:currentWindow];
-        self.backgroundView.alpha = 0;
-    } completion:^(BOOL finished) {
-        [tempImageView removeFromSuperview];
-        [self.backgroundView removeFromSuperview];
-    }];
-    
-}
-
-
-
-- (UIWindow *)currentWindow {
-    UIWindow *currentWindow;
-    if (@available(iOS 13.0, *)) {
-        // 从已连接的Scene中获取第一个活跃的窗口
-        for (UIWindowScene *scene in [UIApplication sharedApplication].connectedScenes) {
-            if (scene.activationState == UISceneActivationStateForegroundActive) {
-                currentWindow = scene.windows.firstObject;
-                break;
-            }
-        }
-    } else {
-        currentWindow = [UIApplication sharedApplication].keyWindow;
-    }
-    return currentWindow;
-}
-
-
 # pragma mark - collection view data source & delegate
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
@@ -163,9 +158,8 @@ typedef NS_ENUM(NSInteger, WBViewTag) {
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return self.imageViewList.count;
+    return self.imageUrlList.count;
 }
-
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
@@ -176,8 +170,10 @@ typedef NS_ENUM(NSInteger, WBViewTag) {
     }
     
     // load imageView
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:self.imageViewList[indexPath.item].image];
-    imageView.frame = collectionView.frame;
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.screenFrame];
+    [imageView sd_setImageWithURL:[NSURL URLWithString:self.imageUrlList[indexPath.item]] placeholderImage: [UIImage imageNamed:@"image_placeholder"]];
+        
+//    NSLog(@"现在是第%ld个cell，图片url为：%@", indexPath.item, self.imageUrlList[indexPath.item]);
     imageView.contentMode = UIViewContentModeScaleAspectFit;
     imageView.backgroundColor = [UIColor blackColor];
     [cell.contentView addSubview:imageView];
@@ -191,5 +187,6 @@ typedef NS_ENUM(NSInteger, WBViewTag) {
     NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:CGPointMake(centerX, 0)];
     
     self.currentIndex = indexPath.item;
+//    NSLog(@"---------现在是第%ld张图片", self.currentIndex);
 }
 @end

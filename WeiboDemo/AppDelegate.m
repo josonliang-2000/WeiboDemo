@@ -18,13 +18,6 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
-    if (@available(iOS 13, *)) {
-        // ios13以上适配多场景
-    } else {
-        // 兼容ios12以下
-        self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-//        self.window.rootViewController =
-    }
     return YES;
 }
 

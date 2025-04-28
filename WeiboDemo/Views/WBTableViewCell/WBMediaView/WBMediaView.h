@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface WBMediaView : UIView
 
-- (void)setImageViews:(NSArray<NSString *> *)picUrls andDelegate:(WBTableViewCell<WBImageViewDelegate> *) delegate;
+- (void)setImageViews:(NSArray<NSString *> *)picUrls andImagesDelegate:(WBTableViewCell<WBImageViewDelegate> *) delegate;
 
 @end
 
