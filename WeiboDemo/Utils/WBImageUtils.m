@@ -108,6 +108,7 @@
         // 需要手动计算imageView中图片的frame
         tempImageView.frame = [self getZoommedInFrameOfImage:imageView.image];
         tempImageView.contentMode = UIViewContentModeScaleAspectFill;
+        tempImageView.clipsToBounds = YES;
         
         // 展现临时的imageView
         UIWindow *currentWindow = [self currentWindow];
@@ -117,7 +118,6 @@
         // 播放缩小动画
         [UIView animateWithDuration:0.3 animations:^{
             tempImageView.frame = dstFrame;
-            tempImageView.clipsToBounds = YES;
         }completion:^(BOOL finished) {
             [tempImageView removeFromSuperview];
             [self.backgroundView removeFromSuperview];
