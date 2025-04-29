@@ -28,10 +28,10 @@
     if(self = [super init]) {
         [self setupUI];
         [self.iconView setImage:[UIImage imageNamed:imgName]];
-        _name = imgName;
         self.count = count;
         
-        [self addTarget:self action:@selector(didTapButton) forControlEvents:UIControlEventTouchUpInside];
+        // KVO改变按钮背景色
+        [self addObserver:self forKeyPath:@"highlighted" options:NSKeyValueObservingOptionNew context:nil];
     }
     return self;
 };
@@ -39,34 +39,6 @@
 - (void)setCount:(NSInteger)count {
     _count = count;
     self.textLbl.text = [self formattedTextforNumber:_count];
-}
-
-- (UIImageView *)iconView {
-    if (_iconView == nil) {
-        _iconView = [[UIImageView alloc] init];
-        _iconView.userInteractionEnabled = NO;
-    }
-    return _iconView;
-}
-
-- (UILabel *)textLbl {
-    if (_textLbl == nil) {
-        _textLbl = [[UILabel alloc] init];
-        _textLbl.font = [UIFont systemFontOfSize:14];
-        _textLbl.userInteractionEnabled = NO;
-    }
-    return _textLbl;
-}
-
-- (UIStackView *)stackView {
-    if (_stackView == nil) {
-        _stackView = [[UIStackView alloc] init];
-        _stackView.userInteractionEnabled = NO;
-        _stackView.spacing = 4;
-        _stackView.axis = UILayoutConstraintAxisHorizontal;
-        _stackView.alignment = UIStackViewAlignmentCenter;
-    }
-    return _stackView;
 }
 
 #pragma mark - private methods
@@ -97,17 +69,17 @@
     }];
 }
 
-- (void)didTapButton {
-    if ([self.name isEqualToString:@"like"]) {
-        // 获取服务器的点赞状态，若已点赞，则+1，否则-1
-        if (YES) {
-            self.count++;
+- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
+    if ([keyPath isEqualToString:@"highlighted"]) {
+        UIButton *button = (UIButton *)object;
+        if (button.highlighted) {
+            button.backgroundColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1.0];
         } else {
-            self.count--;
+            button.backgroundColor = [UIColor clearColor];
         }
     }
-    NSLog(@"%ld", self.count);
 }
+
 
 - (NSString *)formattedTextforNumber:(NSInteger) num {
     if (num <= 9999) {
@@ -118,5 +90,36 @@
         return [NSString stringWithFormat:@"999+万"];
     }
 }
+
+#pragma  mark - getter
+
+- (UIImageView *)iconView {
+    if (_iconView == nil) {
+        _iconView = [[UIImageView alloc] init];
+        _iconView.userInteractionEnabled = NO;
+    }
+    return _iconView;
+}
+
+- (UILabel *)textLbl {
+    if (_textLbl == nil) {
+        _textLbl = [[UILabel alloc] init];
+        _textLbl.font = [UIFont systemFontOfSize:14];
+        _textLbl.userInteractionEnabled = NO;
+    }
+    return _textLbl;
+}
+
+- (UIStackView *)stackView {
+    if (_stackView == nil) {
+        _stackView = [[UIStackView alloc] init];
+        _stackView.userInteractionEnabled = NO;
+        _stackView.spacing = 4;
+        _stackView.axis = UILayoutConstraintAxisHorizontal;
+        _stackView.alignment = UIStackViewAlignmentCenter;
+    }
+    return _stackView;
+}
+
 
 @end

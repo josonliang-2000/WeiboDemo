@@ -51,9 +51,9 @@
     [self.stackView addArrangedSubview:self.mediaView];
     [self.stackView addArrangedSubview:self.countLbl];
     [self.stackView addArrangedSubview:self.line];
-    [self.stackView addArrangedSubview:self.interacButtonsView];
     
     [self.contentView addSubview:self.stackView];
+    [self.contentView addSubview:self.interacButtonsView];
     [self.contentView addSubview:self.seperator];
     
     [self setupLayout];
@@ -96,7 +96,7 @@
     
     // line
     [self.line mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.height.mas_equalTo(1);
+            make.height.mas_equalTo(0.6);
     }];
     
     [self.stackView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -104,11 +104,17 @@
         make.left.equalTo(self.contentView).offset(8);
         make.right.equalTo(self.contentView).offset(-8);
     }];
+    
+    // 按钮区
+    [self.interacButtonsView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.stackView.mas_bottom);
+        make.left.right.equalTo(self.contentView);
+    }];
         
-    // 分割线
+    // 灰色分割区
     [self.seperator mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.contentView);
-        make.top.equalTo(self.stackView.mas_bottom);
+        make.top.equalTo(self.interacButtonsView.mas_bottom);
         make.height.mas_equalTo(8.0);
         make.bottom.equalTo(self.contentView);
     }];

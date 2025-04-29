@@ -20,12 +20,20 @@
 }
 */
 
+#pragma  mark - public methods
+
 - (instancetype)init {
     if (self = [super init]) {
         [self setupUI];
+        
+        [self.shareBtn addTarget:self action:@selector(didTapShareButton:) forControlEvents:UIControlEventTouchUpInside];
+        [self.cmmtBtn addTarget:self action:@selector(didTapCmmtButton:) forControlEvents:UIControlEventTouchUpInside];
+        [self.likeBtn addTarget:self action:@selector(didTapLikeButton:) forControlEvents:UIControlEventTouchUpInside];
     }
     return self;
 }
+
+#pragma  mark - private methods
 
 - (void)setupUI {
     self.shareBtn = [[WBInteractButton alloc] initWithImageName:@"share" andNumber:38000];
@@ -35,14 +43,38 @@
     [self addArrangedSubview:self.cmmtBtn];
     [self addArrangedSubview:self.likeBtn];
     
+    [self initStyle];
+    
     [self setupLayout];
+}
+
+- (void)initStyle {
+ 
 }
 
 
 - (void)setupLayout {
-    self.spacing = 4;
     self.axis = UILayoutConstraintAxisHorizontal; //水平布局
     self.distribution = UIStackViewDistributionFillEqually;
+}
+
+- (void)didTapShareButton:(WBInteractButton *)sender {
+    NSLog(@"did tap %@", sender);
+}
+
+- (void)didTapCmmtButton:(WBInteractButton *)sender {
+    NSLog(@"did tap %@", sender);
+}
+
+- (void)didTapLikeButton:(WBInteractButton *)sender {
+    sender.selected = !sender.selected;
+    if (sender.isSelected) {
+        [sender.iconView setImage:[UIImage imageNamed:@"liked"]];
+        sender.count++;
+    } else {
+        [sender.iconView setImage:[UIImage imageNamed:@"like"]];
+        sender.count--;
+    }
 }
 
 @end

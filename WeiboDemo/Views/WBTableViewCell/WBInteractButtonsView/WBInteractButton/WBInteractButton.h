@@ -15,7 +15,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, strong)UIImageView *iconView;
 @property(nonatomic, strong)UILabel *textLbl;
 @property(nonatomic, assign)NSInteger count;
-@property(nonatomic, readonly)NSString *name;
 
 - (instancetype)initWithImageName:(NSString *)imgName andNumber:(NSInteger)number;
 
