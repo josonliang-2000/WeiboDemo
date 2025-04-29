@@ -11,10 +11,6 @@
 @interface WBInteractButton()
 @property (nonatomic, strong) UIStackView *stackView;
 
-- (void)setupUI;
-- (void) setupLayout;
-- (void)didTapButton;
-- (NSString *)formattedTextforNumber:(NSInteger) num;
 @end
 
 @implementation WBInteractButton

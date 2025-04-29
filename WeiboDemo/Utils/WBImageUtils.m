@@ -8,21 +8,20 @@
 #import "WBImageUtils.h"
 #import "WBImageView.h"
 #import "SDWebImage/SDWebImage.h"
+#import "WBCollectionView.h"
+#import "WBMediaView.h"
 
 @interface WBImageUtils()<UICollectionViewDataSource, UICollectionViewDelegate>
 
-@property (nonatomic, strong) UICollectionView *collectionView;
+@property (nonatomic, strong) WBCollectionView *collectionView;
 @property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic, copy) NSArray<NSString *> *imageUrlList;
 @property (nonatomic, assign) NSInteger currentIndex;
 @property (nonatomic, assign) CGRect screenFrame;
 
-- (void)handleTapOfZoommedInImage:(UITapGestureRecognizer *)tap;
-
 @end
 
 @implementation WBImageUtils
-
 
 #pragma  mark - public methods
 + (instancetype)shared {
@@ -34,7 +33,7 @@
     return instance;
 }
 
-- (void)zoomInImageOfImageView:(WBImageView *)imageView withImageUrlList:(NSArray<NSString *> *)imageUrlList {
+- (void)zoomInImageOfImageView:(WBImageView *)imageView OfImageUrlList:(NSArray<NSString *> *)imageUrlList {
     // 1. 初始化数据
     UIWindow *currentWindow = [self currentWindow];
     self.currentIndex = imageView.index;
@@ -43,28 +42,29 @@
     // 2. 获取imageView全局frame
     const CGRect originFrame = [imageView convertRect:imageView.bounds toView:currentWindow];
     
-    // 3.黑色背景设置为透明
-    self.backgroundView.alpha = 0;
+    // 3. 创建临时的imageView用于动画
+    UIImageView *tempImageView = [[UIImageView alloc] initWithFrame:originFrame];
+    tempImageView.image = imageView.image;
+    tempImageView.contentMode = UIViewContentModeScaleAspectFill; // 防止拉伸
+    tempImageView.clipsToBounds = YES;
     
-    // 4. 创建临时的imageView用于动画
-    UIImageView *tempImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"image_placeholder"]];
-    tempImageView.frame = originFrame;
+    // 4. 动画依托黑色背景
     [self.backgroundView addSubview:tempImageView];
+    [currentWindow addSubview: self.backgroundView];
     
-    // 5. 给collectionView添加点击事件，处理缩小
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapOfZoommedInImage:)];
+    // 5. 准备collectionView，在放大完成后瞬间展示，同时给collectionView添加点击事件，处理缩小
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(zoomOutImageOfImageView)];
     [self.collectionView addGestureRecognizer:tap];
+    // 设置collectionView点击后处理缩小动画的代理
+    self.collectionView.zoomOutDelegate = imageView.superview;
     
-    [currentWindow addSubview:self.backgroundView];
-
-    // 7. 播放放大动画
-    [UIView animateWithDuration:0.4 animations:^{
-        tempImageView.frame = self.collectionView.frame;
-        tempImageView.contentMode = UIViewContentModeScaleAspectFit;
-         self.backgroundView.alpha = 1;
+    // 6. 播放放大动画
+    [UIView animateWithDuration:0.3 animations:^{
+        tempImageView.frame = [self getZoommedInFrameOfImage:tempImageView.image];
      } completion:^(BOOL finished) {
          [tempImageView removeFromSuperview];
          [self.backgroundView removeFromSuperview];
+        
          // 动画完成后显示CollectionView
          [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:self.currentIndex inSection:0] atScrollPosition:UICollectionViewScrollPositionNone animated:NO];
          [currentWindow addSubview:self.collectionView];
@@ -89,32 +89,58 @@
 
 #pragma mark - private methods
 
-- (void)handleTapOfZoommedInImage:(UITapGestureRecognizer *)tap {
-    // collectionView离屏并清空cell
+- (void)zoomOutImageOfImageView {
+    // collectionView离屏
     [self.collectionView removeFromSuperview];
+    
+    // 处理缩小动画
+    if ([self.collectionView.zoomOutDelegate respondsToSelector:@selector(getFrameFromIndex:)]) {
+        CGRect dstFrame = [self.collectionView.zoomOutDelegate getFrameFromIndex:self.currentIndex];
+        
+        // 取出当前cell的imageView
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.currentIndex inSection:0];
+        UICollectionViewCell *cell = [self.collectionView cellForItemAtIndexPath:indexPath];
+        UIImageView *imageView = cell.contentView.subviews.firstObject;
+        
+        // 创建临时的imageView用于动画
+        UIImageView *tempImageView = [[UIImageView alloc] initWithImage:imageView.image];
+        
+        // 需要手动计算imageView中图片的frame
+        tempImageView.frame = [self getZoommedInFrameOfImage:imageView.image];
+        tempImageView.contentMode = UIViewContentModeScaleAspectFill;
+        
+        // 展现临时的imageView
+        UIWindow *currentWindow = [self currentWindow];
+        [self.backgroundView addSubview:tempImageView];
+        [currentWindow addSubview:self.backgroundView];
+        
+        // 播放缩小动画
+        [UIView animateWithDuration:0.3 animations:^{
+            tempImageView.frame = dstFrame;
+            tempImageView.clipsToBounds = YES;
+        }completion:^(BOOL finished) {
+            [tempImageView removeFromSuperview];
+            [self.backgroundView removeFromSuperview];
+        }];
+    }
     self.collectionView = nil;
+}
+
+// 返回图片全屏放大之后的frame
+- (CGRect)getZoommedInFrameOfImage:(UIImage *)image {
+    CGFloat imageH = image.size.height;
+    CGFloat imageW = image.size.width;
+    CGFloat heightToWidth = imageH / imageW;
     
-//    // 取出九宫格的那个imageView
-//    UIImageView *imageView = self.imageViewList[self.currentIndex];
-//    // 创建临时tempImageView
-//    UIImageView *tempImageView = [[UIImageView alloc] initWithImage:imageView.image];
-//    tempImageView.frame = self.collectionView.frame;
-//    tempImageView.contentMode = UIViewContentModeScaleAspectFit;
-//    // 加入到backgroundView
-//    [self.backgroundView addSubview:tempImageView];
-//    // 显示backgroundView
-//    UIWindow *currentWindow = [self currentWindow];
-//    [currentWindow addSubview:self.backgroundView];
-//    
-//    // 播放缩小动画
-//    [UIView animateWithDuration:0.4 animations:^ {
-//        tempImageView.frame = [imageView convertRect:imageView.bounds toView:currentWindow];
-//        self.backgroundView.alpha = 0;
-//    } completion:^(BOOL finished) {
-//        [tempImageView removeFromSuperview];
-//        [self.backgroundView removeFromSuperview];
-//    }];
+    CGFloat screenH = self.screenFrame.size.height;
+    CGFloat screenW = self.screenFrame.size.width;
     
+    CGFloat dstH = screenW * heightToWidth;
+    
+    // 屏幕宽为图片宽
+    CGFloat dstX = 0;
+    CGFloat dstY = (screenH - dstH) / 2.0;
+    return CGRectMake(dstX, dstY, screenW, dstH);
 }
 
 #pragma mark getter
@@ -136,7 +162,7 @@
         layout.minimumLineSpacing = 0;
         layout.minimumInteritemSpacing = 0;
         
-        _collectionView = [[UICollectionView alloc] initWithFrame:self.screenFrame collectionViewLayout:layout];
+        _collectionView = [[WBCollectionView alloc] initWithFrame:self.screenFrame collectionViewLayout:layout];
         _collectionView .backgroundColor = [UIColor grayColor];
         _collectionView.pagingEnabled = YES;
         _collectionView.showsHorizontalScrollIndicator = NO;

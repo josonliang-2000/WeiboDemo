@@ -138,11 +138,7 @@
     }
     
     // 配图
-    [self.mediaView setImageViews:self.model.pic andImagesDelegate:self];
-}
-
-- (void)didTapImageView:(WBImageView *)imageView {
-    [[WBImageUtils shared] zoomInImageOfImageView:imageView withImageUrlList:self.model.pic];
+    [self.mediaView setImagesWithUrls:self.model.pic];
 }
 
 #pragma mark - getter

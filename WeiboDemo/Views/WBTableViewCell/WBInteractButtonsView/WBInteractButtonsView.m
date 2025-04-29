@@ -38,6 +38,7 @@
     [self setupLayout];
 }
 
+
 - (void)setupLayout {
     self.spacing = 4;
     self.axis = UILayoutConstraintAxisHorizontal; //水平布局

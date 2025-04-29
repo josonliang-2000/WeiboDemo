@@ -9,8 +9,17 @@
 #import "WBImageView.h"
 #import "WBTableViewCell.h"
 #import "WBImageViewDelegate.h"
+#import "WBCollectionViewDelegate.h"
 #import "SDWebImage/SDWebImage.h"
 #import "Masonry/Masonry.h"
+#import "WBImageUtils.h"
+
+@interface WBMediaView()
+
+@property (nonatomic, strong) NSMutableArray<WBImageView *> *imageViews;
+@property (nonatomic, strong) NSArray<NSString *> *picUrls;
+
+@end
 
 @implementation WBMediaView
 
@@ -22,12 +31,14 @@
 }
 */
 
-- (void)setImageViews:(NSArray<NSString *> *)picUrls andImagesDelegate:(WBTableViewCell<WBImageViewDelegate> *) delegate {
+- (void)setImagesWithUrls:(NSArray<NSString *> *)picUrls {
+    self.picUrls = picUrls;
+    
     const CGFloat spacing = 4;
     const CGFloat kHorizontalMargin = 8;
-    
     // 先清空子控件
     [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    [self.imageViews removeAllObjects];
     
     // 重新计算布局并添加子控件
     NSArray<NSString *> *picsArray = [NSArray arrayWithArray:picUrls];
@@ -45,7 +56,7 @@
                 [imageView sd_setImageWithURL:[NSURL URLWithString:picUrls[i]]];
                 imageView.contentMode = UIViewContentModeScaleAspectFill;
                 imageView.clipsToBounds = YES;
-                imageView.delegate = delegate;
+                imageView.delegate = self;
                 imageView.frame = CGRectMake((spacing + imageWidth) * (i % columns),
                                              (spacing + imageHeight) * (i / columns),
                                              imageWidth,
@@ -53,6 +64,7 @@
                                              );
                 
                 [self addSubview:imageView];
+                [self.imageViews addObject:imageView];
             }
             // 确定高度
             [self mas_updateConstraints:^(MASConstraintMaker *make) {
@@ -76,12 +88,14 @@
             const CGFloat imageHeight = imageWidth;
             
             WBImageView *imageView = [[WBImageView alloc] initWithIndex: 0];
-            imageView.delegate = delegate;
+            imageView.delegate = self;
             [imageView sd_setImageWithURL:[NSURL URLWithString:picUrls[0]]];
             imageView.contentMode = UIViewContentModeScaleAspectFill;
             imageView.clipsToBounds = YES;
             imageView.frame = CGRectMake(0, 0, imageWidth, imageHeight);
+            
             [self addSubview:imageView];
+            [self.imageViews addObject:imageView];
 
             // 确定大小
             [self mas_updateConstraints:^(MASConstraintMaker *make) {
@@ -94,4 +108,19 @@
     }
 }
 
+- (NSMutableArray<WBImageView *> *)imageViews {
+    if (_imageViews == nil) {
+        _imageViews = [[NSMutableArray alloc] init];
+    }
+    return _imageViews;
+}
+
+- (CGRect)getFrameFromIndex:(NSInteger)index {
+    WBImageView *imageView = self.imageViews[index];
+    return [imageView convertRect:imageView.bounds toView:[[WBImageUtils shared] currentWindow]];
+}
+
+- (void)didTapImageView:(WBImageView *)imageView {
+    [[WBImageUtils shared] zoomInImageOfImageView:imageView OfImageUrlList:self.picUrls];
+}
 @end

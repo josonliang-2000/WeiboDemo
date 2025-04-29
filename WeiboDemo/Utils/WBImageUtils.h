@@ -13,13 +13,15 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class WBMediaView;
 @class WBImageView;
 @interface WBImageUtils : NSObject
 
 + (instancetype)shared;
 - (UIWindow *)currentWindow;
 - (void)zoomInImageOfImageView:(WBImageView *)imageView
-              withImageUrlList:(NSArray<NSString *> *)imageUrlList;
+              OfImageUrlList:(NSArray<NSString *> *)imageUrlList;
+
 
 @end
 

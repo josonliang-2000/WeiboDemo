@@ -6,14 +6,13 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "WBImageViewDelegate.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @class WBCellModel;
-@interface WBTableViewCell : UITableViewCell<WBImageViewDelegate>
+@interface WBTableViewCell : UITableViewCell
 
-@property(nonatomic, copy)WBCellModel *model;
+@property (nonatomic, copy) WBCellModel *model;
 @property (nonatomic, copy) NSArray<UIImageView *> *imageViewList;
 
 @end

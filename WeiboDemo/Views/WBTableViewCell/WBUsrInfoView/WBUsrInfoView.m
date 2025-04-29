@@ -113,7 +113,7 @@
         self.followBtn.layer.borderColor = [UIColor orangeColor].CGColor;
         _followBtn.titleLabel.font = [UIFont systemFontOfSize:14];
         [_followBtn setTitle:@"+关注" forState:UIControlStateNormal];
-        [_followBtn setTitle:@"已关注" forState:UIControlStateSelected];
+        [_followBtn setTitle:@"✓已关注" forState:UIControlStateSelected];
         
         [_followBtn setTitleColor:[UIColor colorWithRed:230/255.0 green:90/255.0 blue:0/255.0 alpha:1.0] forState:UIControlStateNormal];
         [_followBtn setTitleColor:[UIColor grayColor] forState:UIControlStateSelected];
