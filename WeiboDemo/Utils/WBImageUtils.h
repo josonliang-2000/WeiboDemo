@@ -15,13 +15,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class WBMediaView;
 @class WBImageView;
+
+@protocol WBZoomOutDelegate;
+
 @interface WBImageUtils : NSObject
 
 + (instancetype)shared;
 - (UIWindow *)currentWindow;
 - (void)zoomInImageOfImageView:(WBImageView *)imageView
-              OfImageUrlList:(NSArray<NSString *> *)imageUrlList;
-
+                OfImageUrlList:(NSArray<NSString *> *)imageUrlList
+               zoomOutDelegate:(id<WBZoomOutDelegate>) zoomOutDelegate;
 
 @end
 

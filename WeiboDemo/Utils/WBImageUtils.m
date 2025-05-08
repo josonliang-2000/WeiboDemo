@@ -8,16 +8,18 @@
 #import "WBImageUtils.h"
 #import "WBImageView.h"
 #import "SDWebImage/SDWebImage.h"
-#import "WBCollectionView.h"
 #import "WBMediaView.h"
+#import "WBZoomOutDelegate.h"
+
 
 @interface WBImageUtils()<UICollectionViewDataSource, UICollectionViewDelegate>
 
-@property (nonatomic, strong) WBCollectionView *collectionView;
+@property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic, copy) NSArray<NSString *> *imageUrlList;
 @property (nonatomic, assign) NSInteger currentIndex;
 @property (nonatomic, assign) CGRect screenFrame;
+@property (nonatomic, weak) id<WBZoomOutDelegate> zoomOutDelegate;
 
 @end
 
@@ -33,11 +35,12 @@
     return instance;
 }
 
-- (void)zoomInImageOfImageView:(WBImageView *)imageView OfImageUrlList:(NSArray<NSString *> *)imageUrlList {
+- (void)zoomInImageOfImageView:(WBImageView *)imageView OfImageUrlList:(NSArray<NSString *> *)imageUrlList zoomOutDelegate:(id<WBZoomOutDelegate>) zoomOutDelegate {
     // 1. 初始化数据
     UIWindow *currentWindow = [self currentWindow];
     self.currentIndex = imageView.index;
     self.imageUrlList = imageUrlList;
+    self.zoomOutDelegate = zoomOutDelegate;
     
     // 2. 获取imageView全局frame
     const CGRect originFrame = [imageView convertRect:imageView.bounds toView:currentWindow];
@@ -52,22 +55,14 @@
     [self.backgroundView addSubview:tempImageView];
     [currentWindow addSubview: self.backgroundView];
     
-    // 5. 准备collectionView，在放大完成后瞬间展示，同时给collectionView添加点击事件，处理缩小
-    // TODO: 手势改成代理方法
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(zoomOutImageOfImageView)];
-    [self.collectionView addGestureRecognizer:tap];
-    // 设置collectionView点击后处理缩小动画的代理
-    // TODO: delegate从入参进来
-    self.collectionView.zoomOutDelegate = imageView.superview;
-    
-    // 6. 播放放大动画
+    // 5. 播放放大动画
     [UIView animateWithDuration:0.3 animations:^{
         tempImageView.frame = [self getZoommedInFrameOfImage:tempImageView.image];
      } completion:^(BOOL finished) {
          [tempImageView removeFromSuperview];
          [self.backgroundView removeFromSuperview];
         
-         // 动画完成后显示CollectionView
+         // 6. 动画完成后显示CollectionView
          [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:self.currentIndex inSection:0] atScrollPosition:UICollectionViewScrollPositionNone animated:NO];
          [currentWindow addSubview:self.collectionView];
      }];
@@ -96,9 +91,8 @@
     [self.collectionView removeFromSuperview];
     
     // 处理缩小动画
-    if ([self.collectionView.zoomOutDelegate respondsToSelector:@selector(getFrameFromIndex:)]) {
-        // TODO: 改成Utils的协议
-        CGRect dstFrame = [self.collectionView.zoomOutDelegate getFrameFromIndex:self.currentIndex];
+    if ([self.zoomOutDelegate respondsToSelector:@selector(getFrameFromIndex:)]) {
+        CGRect dstFrame = [self.zoomOutDelegate getFrameFromIndex:self.currentIndex];
         
         // 取出当前cell的imageView
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.currentIndex inSection:0];
@@ -165,7 +159,7 @@
         layout.minimumLineSpacing = 0;
         layout.minimumInteritemSpacing = 0;
         
-        _collectionView = [[WBCollectionView alloc] initWithFrame:self.screenFrame collectionViewLayout:layout];
+        _collectionView = [[UICollectionView alloc] initWithFrame:self.screenFrame collectionViewLayout:layout];
         _collectionView .backgroundColor = [UIColor grayColor];
         _collectionView.pagingEnabled = YES;
         _collectionView.showsHorizontalScrollIndicator = NO;
@@ -217,5 +211,9 @@
     
     self.currentIndex = indexPath.item;
 //    NSLog(@"---------现在是第%ld张图片", self.currentIndex);
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    [self zoomOutImageOfImageView];
 }
 @end

@@ -8,8 +8,7 @@
 #ifndef WBUICollectionViewDelegate_h
 #define WBUICollectionViewDelegate_h
 
-@class WBMediaView;
-@protocol WBCollectionViewDelegate <NSObject>
+@protocol WBZoomOutDelegate <NSObject>
 
 - (CGRect)getFrameFromIndex:(NSInteger)index;
 @end

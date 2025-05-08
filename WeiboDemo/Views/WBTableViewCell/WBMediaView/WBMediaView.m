@@ -9,13 +9,13 @@
 #import "WBImageView.h"
 #import "WBTableViewCell.h"
 #import "WBImageViewDelegate.h"
-#import "WBCollectionViewDelegate.h"
 #import "SDWebImage/SDWebImage.h"
 #import "Masonry/Masonry.h"
 #import "WBImageUtils.h"
 #import "WBImageViewDelegate.h"
+#import "WBZoomOutDelegate.h"
 
-@interface WBMediaView()<WBCollectionViewDelegate, WBImageViewDelegate>
+@interface WBMediaView()<WBZoomOutDelegate, WBImageViewDelegate>
 
 @property (nonatomic, strong) NSMutableArray<WBImageView *> *imageViews;
 @property (nonatomic, strong) NSArray<NSString *> *picUrls;
@@ -116,12 +116,16 @@
     return _imageViews;
 }
 
+#pragma  mark - WBImageViewDelegate
+
+- (void)didTapImageView:(WBImageView *)imageView {
+    [[WBImageUtils shared] zoomInImageOfImageView:imageView OfImageUrlList:self.picUrls zoomOutDelegate:self];
+}
+
+#pragma  mark - WBZoomOutDelegate
+
 - (CGRect)getFrameFromIndex:(NSInteger)index {
     WBImageView *imageView = self.imageViews[index];
     return [imageView convertRect:imageView.bounds toView:[[WBImageUtils shared] currentWindow]];
-}
-
-- (void)didTapImageView:(WBImageView *)imageView {
-    [[WBImageUtils shared] zoomInImageOfImageView:imageView OfImageUrlList:self.picUrls];
 }
 @end
