@@ -9,6 +9,14 @@
 #import "Masonry/Masonry.h"
 #import "WBImageView.h"
 
+@interface WBUsrInfoView()
+
+// 关注按钮的边框颜色
+@property (strong, nonatomic) UIColor *normaloBorderColor;
+@property (strong, nonatomic) UIColor *selectedBorderColor;
+
+@end
+
 @implementation WBUsrInfoView
 
 /*
@@ -25,10 +33,18 @@
     if (self = [super init]) {
         [self setupUI];
         [self.followBtn addTarget:self action:@selector(didTapFollowBtn) forControlEvents:UIControlEventTouchUpInside];
+        [self.followBtn addObserver:self forKeyPath:@"selected" options:NSKeyValueObservingOptionNew context:nil];
     }
     return self;
 }
 
+#pragma mark - Overided
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
+    if ([keyPath isEqualToString:@"selected"]) {
+        self.followBtn.layer.borderColor = self.followBtn.isSelected ? self.selectedBorderColor.CGColor : self.normaloBorderColor.CGColor;
+    }
+}
 
 # pragma mark private methods
 
@@ -68,7 +84,7 @@
     [_followBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self).offset(-12);
         make.centerY.equalTo(self);
-        make.width.equalTo(@60);
+        make.width.equalTo(@68);
         make.height.equalTo(@28);
     }];
     _followBtn.layer.cornerRadius = 4;
@@ -76,7 +92,6 @@
 
 - (void)didTapFollowBtn {
     self.followBtn.selected = !self.followBtn.selected;
-    // 修改数据库的值
 }
 
 #pragma mark - getter
@@ -108,10 +123,10 @@
 - (UIButton *)followBtn {
     if (_followBtn == nil) {
         _followBtn = [[UIButton alloc] init];
-        [_followBtn setBackgroundColor:[UIColor clearColor]];
         _followBtn.layer.borderWidth = 1.0;
-        self.followBtn.layer.borderColor = [UIColor orangeColor].CGColor;
         _followBtn.titleLabel.font = [UIFont systemFontOfSize:14];
+        _followBtn.contentEdgeInsets = UIEdgeInsetsMake(0, 6, 0, 6);
+        
         [_followBtn setTitle:@"+关注" forState:UIControlStateNormal];
         [_followBtn setTitle:@"✓已关注" forState:UIControlStateSelected];
         
@@ -119,6 +134,20 @@
         [_followBtn setTitleColor:[UIColor grayColor] forState:UIControlStateSelected];
     }
     return _followBtn;
+}
+
+- (UIColor *)normaloBorderColor {
+    if (!_normaloBorderColor) {
+        _normaloBorderColor = [UIColor orangeColor];
+    }
+    return _normaloBorderColor;
+}
+
+- (UIColor *)selectedBorderColor {
+    if (!_selectedBorderColor) {
+        _selectedBorderColor = [UIColor lightGrayColor];
+    }
+    return _selectedBorderColor;
 }
 
 @end

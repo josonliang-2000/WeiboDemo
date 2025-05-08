@@ -8,7 +8,8 @@
 #import "WBInteractButtonsView.h"
 #import "WBInteractButton.h"
 #import "Masonry/Masonry.h"
-
+#import "WBViewController.h"
+#import "WBCommentViewController.h"
 
 @implementation WBInteractButtonsView
 
@@ -43,15 +44,8 @@
     [self addArrangedSubview:self.cmmtBtn];
     [self addArrangedSubview:self.likeBtn];
     
-    [self initStyle];
-    
     [self setupLayout];
 }
-
-- (void)initStyle {
- 
-}
-
 
 - (void)setupLayout {
     self.axis = UILayoutConstraintAxisHorizontal; //水平布局
@@ -63,7 +57,20 @@
 }
 
 - (void)didTapCmmtButton:(WBInteractButton *)sender {
-    NSLog(@"did tap %@", sender);
+    // 1. 通过响应链找到所在的视图控制器
+    UIResponder *responder = self;
+    while ((responder = [responder nextResponder])) {
+        if ([responder isKindOfClass:[WBViewController class]]) {
+            WBViewController *currenntVC = (WBViewController *)responder;
+            
+            // 2. 创建评论区
+            WBCommentViewController *commentVC = [[WBCommentViewController alloc] init];
+            
+            // 3. 通过导航控制器跳转
+            [currenntVC.navigationController pushViewController:commentVC animated:YES];
+            break;
+        }
+    }
 }
 
 - (void)didTapLikeButton:(WBInteractButton *)sender {

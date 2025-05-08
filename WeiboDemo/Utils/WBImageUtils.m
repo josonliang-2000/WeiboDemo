@@ -53,9 +53,11 @@
     [currentWindow addSubview: self.backgroundView];
     
     // 5. 准备collectionView，在放大完成后瞬间展示，同时给collectionView添加点击事件，处理缩小
+    // TODO: 手势改成代理方法
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(zoomOutImageOfImageView)];
     [self.collectionView addGestureRecognizer:tap];
     // 设置collectionView点击后处理缩小动画的代理
+    // TODO: delegate从入参进来
     self.collectionView.zoomOutDelegate = imageView.superview;
     
     // 6. 播放放大动画
@@ -95,6 +97,7 @@
     
     // 处理缩小动画
     if ([self.collectionView.zoomOutDelegate respondsToSelector:@selector(getFrameFromIndex:)]) {
+        // TODO: 改成Utils的协议
         CGRect dstFrame = [self.collectionView.zoomOutDelegate getFrameFromIndex:self.currentIndex];
         
         // 取出当前cell的imageView

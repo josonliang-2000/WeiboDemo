@@ -13,8 +13,9 @@
 #import "SDWebImage/SDWebImage.h"
 #import "Masonry/Masonry.h"
 #import "WBImageUtils.h"
+#import "WBImageViewDelegate.h"
 
-@interface WBMediaView()
+@interface WBMediaView()<WBCollectionViewDelegate, WBImageViewDelegate>
 
 @property (nonatomic, strong) NSMutableArray<WBImageView *> *imageViews;
 @property (nonatomic, strong) NSArray<NSString *> *picUrls;

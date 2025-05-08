@@ -28,25 +28,11 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
     [self.tableView registerClass:[WBTableViewCell class] forCellReuseIdentifier:@"cell_id"];
-    [self.view addSubview:_tableView];
+    [self.view addSubview:self.tableView];
+    self.tableView.separatorInset = UIEdgeInsetsZero; // 取消默认缩进20px
     [_tableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(self.view);
     }];
-    
-    // TODO: 测一下帧率
-//    self.cellPicNumToTypeDict = [[NSDictionary alloc] init];
-//    self.cellPicNumToTypeDict = @{
-//        @0:@"WBTableCell_NoPic",
-//        @1:@"WBTableCell_1Pics",
-//        @2:@"WBTableCell_2Pics",
-//        @3:@"WBTableCell_3Pics",
-//        @4:@"WBTableCell_4Pics",
-//        @5:@"WBTableCell_5Pics",
-//        @6:@"WBTableCell_6Pics",
-//        @7:@"WBTableCell_7Pics",
-//        @8:@"WBTableCell_8Pics",
-//        @9:@"WBTableCell_9Pics",
-//    };
 }
 
 - (UITableView *)tableView {

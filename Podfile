@@ -8,6 +8,7 @@ target 'WeiboDemo' do
   # Pods for WeiboDemo
   pod 'SDWebImage'
   pod 'Masonry', '~>1.1'
+  pod 'AFNetworking', '~> 4.0'
   target 'WeiboDemoTests' do
     inherit! :search_paths
     # Pods for testing

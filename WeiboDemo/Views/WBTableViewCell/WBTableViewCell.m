@@ -62,25 +62,6 @@
 - (void)initStyle {
     // 取消cell选中时默认背景色
     self.selectionStyle = UITableViewCellSelectionStyleNone;
-    
-    // for debug
-//    void(^setborder)(UIView *, UIColor *) = ^(UIView * view, UIColor *color) {
-//        view.layer.borderColor = color.CGColor;
-//        view.layer.borderWidth = 4.0;
-//    };
-//    setborder(self.textLbl, [UIColor redColor]);
-//    setborder(self.mediaView, [UIColor blueColor]);
-//    setborder(self.interacButtonsView, [UIColor greenColor]);
-}
-
-- (NSString *)formattedCount:(NSInteger) num {
-    if (num <= 9999) {
-        return [NSString stringWithFormat:@"%ld", num];
-    } else if (num <= 999 * 10000) {
-        return [NSString stringWithFormat:@"%.lf万", num / 10000.0];
-    } else {
-        return [NSString stringWithFormat:@"999+万"];
-    }
 }
 
 - (void)setupLayout {
@@ -147,12 +128,21 @@
     [self.mediaView setImagesWithUrls:self.model.pic];
 }
 
+- (NSString *)formattedCount:(NSInteger) num {
+    if (num <= 9999) {
+        return [NSString stringWithFormat:@"%ld", num];
+    } else if (num <= 999 * 10000) {
+        return [NSString stringWithFormat:@"%.lf万", num / 10000.0];
+    } else {
+        return [NSString stringWithFormat:@"999+万"];
+    }
+}
+
 #pragma mark - getter
 
 - (WBUsrInfoView *)usrInfoView {
     if (_usrInfoView == nil) {
         _usrInfoView = [[WBUsrInfoView alloc] init];
-        _usrInfoView.avatarView.delegate = self;
     }
     return _usrInfoView;
 }

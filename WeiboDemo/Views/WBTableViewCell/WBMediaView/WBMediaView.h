@@ -9,13 +9,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class WBTableViewCell;
 @class WBImageView;
 
-@protocol WBImageViewDelegate;
-@protocol WBCollectionViewDelegate;
-
-@interface WBMediaView : UIView<WBCollectionViewDelegate, WBImageViewDelegate>
+@interface WBMediaView : UIView
 
 - (void)setImagesWithUrls:(NSArray<NSString *> *)picUrls;
 - (CGRect)getFrameFromIndex:(NSInteger)index;
