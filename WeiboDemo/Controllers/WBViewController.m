@@ -33,7 +33,48 @@
     [_tableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(self.view);
     }];
+    
+    // 设置RunLoop观察者
+//    [self setupRunLoopObserver];
 }
+
+- (void)setupRunLoopObserver {
+    // 创建观察者
+    CFRunLoopObserverRef observer = CFRunLoopObserverCreateWithHandler(
+        kCFAllocatorDefault,
+        kCFRunLoopAllActivities, // 观察所有活动
+        YES, // 是否重复观察
+        0, // 优先级
+        ^(CFRunLoopObserverRef observer, CFRunLoopActivity activity) {
+            switch (activity) {
+                case kCFRunLoopEntry:
+                    NSLog(@"👉 RunLoop 进入");
+                    break;
+                case kCFRunLoopBeforeTimers:
+                    NSLog(@"⏱️ RunLoop 即将处理 Timer");
+                    break;
+                case kCFRunLoopBeforeSources:
+                    NSLog(@"🔌 RunLoop 即将处理 Source");
+                    break;
+                case kCFRunLoopBeforeWaiting:
+                    NSLog(@"😴 RunLoop 即将进入休眠");
+                    break;
+                case kCFRunLoopAfterWaiting:
+                    NSLog(@"☀️ RunLoop 被唤醒");
+                    break;
+                case kCFRunLoopExit:
+                    NSLog(@"👋 RunLoop 退出");
+                    break;
+                default:
+                    break;
+            }
+        });
+    
+    // 将观察者添加到主线程的 RunLoop
+    CFRunLoopAddObserver(CFRunLoopGetMain(), observer, kCFRunLoopCommonModes);
+    CFRelease(observer);
+}
+
 
 - (UITableView *)tableView {
     if (_tableView == nil) {

@@ -70,7 +70,7 @@
     
     // 设置tabbarItem样式
     self.homeNC.tabBarItem = [self systemTabBarItemWithTitle:@"首页" systemIconName:@"house" selectedIconName:@"house.fill"];
-    self.videoNC.tabBarItem = [self systemTabBarItemWithTitle:@"视频号" systemIconName:@"play.rectangle" selectedIconName:@"play.rectangle.fill"];
+    self.videoNC.tabBarItem = [self systemTabBarItemWithTitle:@"视频下载" systemIconName:@"play.rectangle" selectedIconName:@"play.rectangle.fill"];
     self.findNC.tabBarItem = [self systemTabBarItemWithTitle:@"发现" systemIconName:@"magnifyingglass" selectedIconName:@"magnifyingglass"];
     self.messageNC.tabBarItem = [self systemTabBarItemWithTitle:@"消息" systemIconName:@"message" selectedIconName:@"message.fill"];
     self.meNC.tabBarItem = [self systemTabBarItemWithTitle:@"我" systemIconName:@"person" selectedIconName:@"person.fill"];

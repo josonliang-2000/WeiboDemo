@@ -35,7 +35,7 @@
     return instance;
 }
 
-- (void)zoomInImageOfImageView:(WBImageView *)imageView OfImageUrlList:(NSArray<NSString *> *)imageUrlList zoomOutDelegate:(id<WBZoomOutDelegate>) zoomOutDelegate {
+- (void)zoomInImageOfImageURLList:(WBImageView *)imageView OfImageUrlList:(NSArray<NSString *> *)imageUrlList zoomOutDelegate:(id<WBZoomOutDelegate>) zoomOutDelegate {
     // 1. 初始化数据
     UIWindow *currentWindow = [self currentWindow];
     self.currentIndex = imageView.index;
