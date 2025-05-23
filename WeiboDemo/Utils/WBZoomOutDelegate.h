@@ -10,6 +10,6 @@
 
 @protocol WBZoomOutDelegate <NSObject>
 
-- (CGRect)getFrameFromIndex:(NSInteger)index;
+- (CGRect)getImageFrameFromIndex:(NSInteger)index;
 @end
 #endif /* WBUICollectionViewDelegate_h */

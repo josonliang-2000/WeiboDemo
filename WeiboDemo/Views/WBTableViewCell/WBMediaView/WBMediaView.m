@@ -45,6 +45,7 @@
     NSArray<NSString *> *picsArray = [NSArray arrayWithArray:picUrls];
     if (picsArray.count) {
         const NSInteger picsNum = MIN(9, picsArray.count); // 最多显示9张
+        const BOOL isNeedOverlay = picsArray.count > 9;
         const CGFloat cellWidth = [UIScreen mainScreen].bounds.size.width;
         
         // 根据行数、列数排布mediaView内的照片，以及约束mediaView的高度
@@ -64,8 +65,14 @@
                                              imageHeight
                                              );
                 
+                if (i == 8 && isNeedOverlay) {
+                    // 添加遮罩
+                    [self addOverlayFor:imageView withNum:picsArray.count - 9];
+                }
+                
                 [self addSubview:imageView];
                 [self.imageViews addObject:imageView];
+                
             }
             // 确定高度
             [self mas_updateConstraints:^(MASConstraintMaker *make) {
@@ -109,11 +116,29 @@
     }
 }
 
+- (void)addOverlayFor:(UIImageView *)imageView withNum:(NSInteger)remainCount {
+    // 创建黑色遮照
+    UIView *overlay = [[UIView alloc] initWithFrame:imageView.bounds];
+    overlay.backgroundColor = [[UIColor alloc] initWithWhite:0 alpha:0.5];
+    
+    UILabel *countLabel = [[UILabel alloc] initWithFrame:overlay.bounds];
+    countLabel.text = [NSString stringWithFormat:@"+%ld", remainCount];
+    countLabel.textColor = [UIColor whiteColor];
+    countLabel.font = [UIFont boldSystemFontOfSize:38];
+    countLabel.textAlignment = NSTextAlignmentCenter;
+    
+    [overlay addSubview:countLabel];
+    [imageView addSubview:overlay];
+}
+
 - (NSMutableArray<WBImageView *> *)imageViews {
     if (_imageViews == nil) {
         _imageViews = [[NSMutableArray alloc] init];
     }
     return _imageViews;
+}
+- (void)setVideoWithUrl:(NSString *)videoUrl {
+    
 }
 
 #pragma  mark - WBImageViewDelegate
@@ -124,7 +149,7 @@
 
 #pragma  mark - WBZoomOutDelegate
 
-- (CGRect)getFrameFromIndex:(NSInteger)index {
+- (CGRect)getImageFrameFromIndex:(NSInteger)index {
     WBImageView *imageView = self.imageViews[index];
     return [imageView convertRect:imageView.bounds toView:[[WBImageUtils shared] currentWindow]];
 }

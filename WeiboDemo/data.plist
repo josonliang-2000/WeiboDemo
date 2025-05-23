@@ -3,6 +3,8 @@
 <plist version="1.0">
 <array>
 	<dict>
+		<key>video</key>
+		<string></string>
 		<key>id</key>
 		<string>0</string>
 		<key>text</key>
@@ -20,6 +22,8 @@
 		<string>https://images.pexels.com/photos/27548813/pexels-photo-27548813.jpeg</string>
 	</dict>
 	<dict>
+		<key>video</key>
+		<string></string>
 		<key>id</key>
 		<string>1</string>
 		<key>pic</key>
@@ -36,6 +40,8 @@
 		<string>https://cdn.pixabay.com/photo/2025/04/02/09/50/cat-9508590_1280.jpg</string>
 	</dict>
 	<dict>
+		<key>video</key>
+		<string></string>
 		<key>id</key>
 		<string>2</string>
 		<key>pic</key>
@@ -52,6 +58,8 @@
 		<string>https://cdn.pixabay.com/photo/2023/09/04/23/58/woman-8233937_1280.jpg</string>
 	</dict>
 	<dict>
+		<key>video</key>
+		<string></string>
 		<key>id</key>
 		<string>3</string>
 		<key>pic</key>
@@ -66,6 +74,8 @@
 		<string>https://cdn.pixabay.com/photo/2025/01/31/17/03/fallow-deer-9372866_1280.jpg</string>
 	</dict>
 	<dict>
+		<key>video</key>
+		<string></string>
 		<key>id</key>
 		<string>4</string>
 		<key>pic</key>
@@ -79,6 +89,8 @@
 			<string>https://images.pexels.com/photos/31733140/pexels-photo-31733140.jpeg</string>
 			<string>https://images.pexels.com/photos/31659583/pexels-photo-31659583.jpeg</string>
 			<string>https://images.pexels.com/photos/31061649/pexels-photo-31061649.png</string>
+			<string>https://images.pexels.com/photos/31733140/pexels-photo-31733140.jpeg</string>
+			<string>https://images.pexels.com/photos/31733140/pexels-photo-31733140.jpeg</string>
 		</array>
 		<key>text</key>
 		<string>有没有一首歌，前奏一响就能把你拉回某个瞬间？对我来说是《晴天》——大学宿舍里，室友弹着吉他，窗外在下雨。音乐真是时光机啊……你的‘回忆杀’BGM是哪首？</string>
@@ -90,6 +102,8 @@
 		<string>https://cdn.pixabay.com/photo/2022/03/30/22/05/easter-7101862_1280.jpg</string>
 	</dict>
 	<dict>
+		<key>video</key>
+		<string></string>
 		<key>id</key>
 		<string>5</string>
 		<key>pic</key>
@@ -110,6 +124,8 @@
 		<string>https://cdn.pixabay.com/photo/2022/02/13/17/22/cartoon-easter-bunny-7011655_1280.jpg</string>
 	</dict>
 	<dict>
+		<key>video</key>
+		<string></string>
 		<key>id</key>
 		<string>6</string>
 		<key>text</key>
@@ -128,6 +144,8 @@
 		<string>https://cdn.pixabay.com/photo/2025/03/18/13/18/harvard-pilot-9478129_1280.jpg</string>
 	</dict>
 	<dict>
+		<key>video</key>
+		<string></string>
 		<key>id</key>
 		<string>7</string>
 		<key>pic</key>
@@ -151,6 +169,8 @@
 		<string>https://cdn.pixabay.com/photo/2024/06/25/19/32/love-8853438_1280.png</string>
 	</dict>
 	<dict>
+		<key>video</key>
+		<string></string>
 		<key>id</key>
 		<string>8</string>
 		<key>pic</key>
@@ -175,6 +195,8 @@
 		<string>https://cdn.pixabay.com/photo/2024/04/19/12/44/woman-8706275_1280.jpg</string>
 	</dict>
 	<dict>
+		<key>video</key>
+		<string></string>
 		<key>id</key>
 		<string>9</string>
 		<key>pic</key>
@@ -196,6 +218,8 @@
 		<string>https://cdn.pixabay.com/photo/2022/07/31/21/27/little-boy-7356918_1280.jpg</string>
 	</dict>
 	<dict>
+		<key>video</key>
+		<string></string>
 		<key>id</key>
 		<string>10</string>
 		<key>pic</key>

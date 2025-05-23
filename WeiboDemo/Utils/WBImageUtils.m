@@ -35,7 +35,7 @@
     return instance;
 }
 
-- (void)zoomInImageOfImageURLList:(WBImageView *)imageView OfImageUrlList:(NSArray<NSString *> *)imageUrlList zoomOutDelegate:(id<WBZoomOutDelegate>) zoomOutDelegate {
+- (void)zoomInImageOfImageView:(WBImageView *)imageView OfImageUrlList:(NSArray<NSString *> *)imageUrlList zoomOutDelegate:(id<WBZoomOutDelegate>) zoomOutDelegate {
     // 1. 初始化数据
     UIWindow *currentWindow = [self currentWindow];
     self.currentIndex = imageView.index;
@@ -91,8 +91,9 @@
     [self.collectionView removeFromSuperview];
     
     // 处理缩小动画
-    if ([self.zoomOutDelegate respondsToSelector:@selector(getFrameFromIndex:)]) {
-        CGRect dstFrame = [self.zoomOutDelegate getFrameFromIndex:self.currentIndex];
+    if ([self.zoomOutDelegate respondsToSelector:@selector(getImageFrameFromIndex:)]) {
+        NSInteger dstIndex = MIN(self.currentIndex, 8); // 0 ... 8
+        CGRect dstFrame = [self.zoomOutDelegate getImageFrameFromIndex:dstIndex];
         
         // 取出当前cell的imageView
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.currentIndex inSection:0];

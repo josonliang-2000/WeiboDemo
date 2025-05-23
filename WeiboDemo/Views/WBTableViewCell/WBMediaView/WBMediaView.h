@@ -13,9 +13,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface WBMediaView : UIView
 
+// pic
 - (void)setImagesWithUrls:(NSArray<NSString *> *)picUrls;
-- (CGRect)getFrameFromIndex:(NSInteger)index;
+- (CGRect)getImageFrameFromIndex:(NSInteger)index;
 - (void)didTapImageView:(WBImageView *)imageView;
+
+// video
+- (void)setVideoWithUrl:(NSString *)videoUrl;
 
 @end
 

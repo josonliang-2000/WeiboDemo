@@ -11,12 +11,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface WBCellModel : NSObject
 
-@property (nonatomic, readonly) NSInteger id;
-@property (nonatomic, copy) NSString *text;
-@property (nonatomic, copy) NSArray<NSString *> *pic;
-@property (nonatomic, copy) NSString *name;
-@property (nonatomic, assign) BOOL isVip;
-@property (nonatomic, copy) NSString *avatar;
+@property (nonatomic, assign, readonly) NSInteger id;
+@property (nonatomic, copy, readonly) NSString *text;
+@property (nonatomic, copy, readonly) NSArray<NSString *> *pic;
+@property (nonatomic, copy, readonly) NSString *video;
+@property (nonatomic, copy, readonly) NSString *name;
+@property (nonatomic, assign, readonly) BOOL isVip;
+@property (nonatomic, copy, readonly) NSString *avatar;
 
 
 - (instancetype)initWithDict:(NSDictionary *)dict;
