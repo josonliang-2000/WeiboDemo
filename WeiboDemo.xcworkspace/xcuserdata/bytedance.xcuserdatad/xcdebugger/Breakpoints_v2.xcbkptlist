@@ -398,8 +398,8 @@
             filePath = "WeiboDemo/Views/WBTableViewCell/WBMediaView/WBPlayerView/WBPlayerView.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "136"
-            endingLineNumber = "136"
+            startingLineNumber = "137"
+            endingLineNumber = "137"
             landmarkName = "-setVideoUrl:"
             landmarkType = "7">
          </BreakpointContent>
@@ -497,6 +497,22 @@
             startingLineNumber = "119"
             endingLineNumber = "119"
             landmarkName = "-setVideoWithUrl:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "9C0E36DE-01EF-450E-A795-D6D4025C0294"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WeiboDemo/Views/WBTableViewCell/WBMediaView/WBPlayerView/WBPlayerView.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "114"
+            endingLineNumber = "114"
+            landmarkName = "-setupUI"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

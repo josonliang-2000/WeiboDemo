@@ -108,9 +108,10 @@
 - (void)setupUI {
     self.backgroundColor = [UIColor blackColor];
     
-    _playerLayer = [[AVPlayerLayer alloc] initWithLayer:_player];
+    _playerLayer = [AVPlayerLayer playerLayerWithPlayer:_player];
     _playerLayer.frame = self.bounds;
-    _playerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+    _playerLayer.videoGravity = AVLayerVideoGravityResizeAspect;
+    _playerLayer.borderColor = [UIColor redColor].CGColor;
     [self.layer addSublayer:_playerLayer];
 }
 
