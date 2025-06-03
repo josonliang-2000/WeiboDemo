@@ -96,9 +96,9 @@
 
 #pragma mark - getter
 
-- (WBImageView *)avatarView {
+- (UIImageView *)avatarView {
     if (_avatarView == nil) {
-        _avatarView = [[WBImageView alloc] init];
+        _avatarView = [[UIImageView alloc] init];
         _avatarView.clipsToBounds = YES;
     }
     return _avatarView;

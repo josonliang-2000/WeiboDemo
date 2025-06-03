@@ -62,6 +62,8 @@
 - (void)initStyle {
     // 取消cell选中时默认背景色
     self.selectionStyle = UITableViewCellSelectionStyleNone;
+    
+//    self.textLbl.backgroundColor = [UIColor grayColor];
 }
 
 - (void)setupLayout {
@@ -117,15 +119,19 @@
     self.usrInfoView.followBtn.selected = NO;
     
     // 发文
-    if (![self.model.text isEqualToString:@""]) {
+    if (self.model.text.length) {
         self.textLbl.text = self.model.text;
         self.textLbl.hidden = NO;
     } else {
         self.textLbl.hidden = YES;
     }
     
-    // 配图
-    [self.mediaView setImagesWithUrls:self.model.pic];
+    // mediaView
+    if (self.model.pic.count) {
+        [self.mediaView setImagesWithUrls:self.model.pic];
+    } else if (self.model.video.length){
+        [self.mediaView setVideoWithUrl:self.model.video];
+    }
 }
 
 - (NSString *)formattedCount:(NSInteger) num {

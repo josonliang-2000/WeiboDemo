@@ -59,7 +59,7 @@
 	</dict>
 	<dict>
 		<key>video</key>
-		<string></string>
+		<string>https://media.w3.org/2010/05/sintel/trailer.mp4</string>
 		<key>id</key>
 		<string>3</string>
 		<key>pic</key>
@@ -89,7 +89,6 @@
 			<string>https://images.pexels.com/photos/31733140/pexels-photo-31733140.jpeg</string>
 			<string>https://images.pexels.com/photos/31659583/pexels-photo-31659583.jpeg</string>
 			<string>https://images.pexels.com/photos/31061649/pexels-photo-31061649.png</string>
-			<string>https://images.pexels.com/photos/31733140/pexels-photo-31733140.jpeg</string>
 			<string>https://images.pexels.com/photos/31733140/pexels-photo-31733140.jpeg</string>
 		</array>
 		<key>text</key>

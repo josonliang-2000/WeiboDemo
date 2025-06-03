@@ -14,11 +14,14 @@
 #import "WBImageUtils.h"
 #import "WBImageViewDelegate.h"
 #import "WBZoomOutDelegate.h"
+#import "WBPlayerView.h"
 
 @interface WBMediaView()<WBZoomOutDelegate, WBImageViewDelegate>
 
 @property (nonatomic, strong) NSMutableArray<WBImageView *> *imageViews;
 @property (nonatomic, strong) NSArray<NSString *> *picUrls;
+@property (nonatomic, assign) CGFloat contentWidth;
+@property (nonatomic, strong) WBPlayerView *playerView;
 
 @end
 
@@ -32,25 +35,22 @@
 }
 */
 
+#pragma mark - public
 - (void)setImagesWithUrls:(NSArray<NSString *> *)picUrls {
     self.picUrls = picUrls;
+    // 先清空数据
+    [self clearData];
     
     const CGFloat spacing = 4;
-    const CGFloat kHorizontalMargin = 8;
-    // 先清空子控件
-    [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    [self.imageViews removeAllObjects];
-    
     // 重新计算布局并添加子控件
     NSArray<NSString *> *picsArray = [NSArray arrayWithArray:picUrls];
     if (picsArray.count) {
         const NSInteger picsNum = MIN(9, picsArray.count); // 最多显示9张
         const BOOL isNeedOverlay = picsArray.count > 9;
-        const CGFloat cellWidth = [UIScreen mainScreen].bounds.size.width;
         
         // 根据行数、列数排布mediaView内的照片，以及约束mediaView的高度
         void(^arrangePicsandLayout)(int, int) = ^(int columns, int rows) {
-            CGFloat imageWidth = (cellWidth - spacing * (columns - 1) - kHorizontalMargin * 2) / columns;
+            CGFloat imageWidth = (self.contentWidth - spacing * (columns - 1)) / columns;
             CGFloat imageHeight = imageWidth;
             CGFloat mediaViewH = imageHeight * rows + spacing * (rows - 1);
             for (int i = 0; i < picsNum; i++) {
@@ -116,8 +116,28 @@
     }
 }
 
+- (void)setVideoWithUrl:(NSString *)videoUrl {
+    [self clearData];
+    
+    const CGFloat height = self.contentWidth / 16 * 9;
+    CGRect frame = CGRectMake(0, 0, self.contentWidth, height);
+    WBPlayerView *playerView = [[WBPlayerView alloc] initWithFrame:frame andUrl:[NSURL URLWithString:videoUrl]];
+    [self addSubview:playerView];
+    
+    [self mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.height.mas_equalTo(height);
+    }];
+}
+
+#pragma mark - private
+
+- (void)clearData {
+    [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    [self.imageViews removeAllObjects];
+}
+
 - (void)addOverlayFor:(UIImageView *)imageView withNum:(NSInteger)remainCount {
-    // 创建黑色遮照
+    // 创建黑色遮罩
     UIView *overlay = [[UIView alloc] initWithFrame:imageView.bounds];
     overlay.backgroundColor = [[UIColor alloc] initWithWhite:0 alpha:0.5];
     
@@ -131,14 +151,20 @@
     [imageView addSubview:overlay];
 }
 
+
+#pragma mark - get
+
 - (NSMutableArray<WBImageView *> *)imageViews {
     if (_imageViews == nil) {
         _imageViews = [[NSMutableArray alloc] init];
     }
     return _imageViews;
 }
-- (void)setVideoWithUrl:(NSString *)videoUrl {
-    
+
+- (CGFloat)contentWidth {
+    CGFloat cellWidth = [UIScreen mainScreen].bounds.size.width;
+    CGFloat kMarginX = 8.0f;
+    return cellWidth - kMarginX * 2;
 }
 
 #pragma  mark - WBImageViewDelegate
